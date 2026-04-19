@@ -23,82 +23,78 @@
             overflow-x: hidden;
             background-image: 
                 linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
-                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 4px, 3px 100%; /* Scanlines effect */
+                linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 4px, 3px 100%;
         }
 
         #net-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.25; pointer-events: none; }
         #prog { position: fixed; top: 0; left: 0; height: 2px; background: var(--c); z-index: 9999; width: 0%; box-shadow: 0 0 10px var(--c); }
 
-        /* TERMINAL NAV */
         nav {
             position: fixed; top: 0; width: 100%; z-index: 100; padding: 20px 6%;
             display: flex; justify-content: space-between; align-items: center;
             background: rgba(3, 3, 8, 0.9); border-bottom: 1px solid var(--border); backdrop-filter: blur(10px);
         }
         .nav-logo { font-family: 'Space Mono', monospace; font-size: 0.9rem; letter-spacing: 2px; }
-        .nav-logo span { color: var(--c); }
-        .status-dot { display: inline-block; width: 8px; height: 8px; background: var(--c); border-radius: 50%; margin-right: 10px; animation: blink 1s infinite; }
+        .nav-badge { border: 1px solid var(--p); color: var(--p); padding: 5px 12px; font-size: 0.55rem; font-family: 'Space Mono'; }
 
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-
-        /* HERO SECTION */
+        /* HERO */
         .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 8%; position: relative; z-index: 2; }
-        .kicker { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--c); margin-bottom: 20px; display: block; }
+        .terminal-label { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--c); margin-bottom: 20px; display: block; }
         
         .htitle { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 10vw, 8rem); line-height: 0.9; margin-bottom: 30px; }
-        .htitle span { color: var(--p); position: relative; }
-        
-        /* GLITCH EFFECT */
-        .glitch { position: relative; display: inline-block; }
-        .glitch::before, .glitch::after {
-            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.8;
-        }
-        .glitch:hover::before { animation: glitch-anim 0.3s infinite linear alternate-reverse; color: var(--c); z-index: -1; }
-        .glitch:hover::after { animation: glitch-anim 0.3s infinite linear alternate; color: var(--p); z-index: -2; }
+        .typing-text { border-right: 4px solid var(--c); white-space: nowrap; overflow: hidden; display: inline-block; }
+        .glitch-num { color: var(--c); position: relative; display: inline-block; transition: 0.3s; }
+        .glitch-num:hover { text-shadow: 2px 0 var(--p), -2px 0 var(--c); animation: glitch-anim 0.2s infinite; }
 
         @keyframes glitch-anim {
-            0% { clip-path: inset(10% 0 30% 0); transform: translate(-2px, -2px); }
-            100% { clip-path: inset(40% 0 10% 0); transform: translate(2px, 2px); }
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
         }
 
-        .hdesc { font-size: 1.2rem; font-weight: 300; color: var(--dim); max-width: 650px; margin-bottom: 40px; font-family: 'Montserrat', sans-serif; }
-        .hdesc b { color: var(--white); }
+        .hdesc { font-size: 1.2rem; font-weight: 300; color: var(--dim); max-width: 650px; margin-bottom: 40px; }
 
-        /* TERMINAL BLOCKS */
+        /* CARDS WITH CIRCUIT BORDER */
         section { padding: 80px 8%; z-index: 2; position: relative; }
-        .t-label { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--c); margin-bottom: 40px; display: block; }
-
-        .vgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--border); border: 1px solid var(--border); }
+        .vgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         @media(max-width: 900px) { .vgrid { grid-template-columns: 1fr; } }
 
-        .vcard { background: var(--bg); padding: 50px; position: relative; transition: 0.3s; }
-        .vcard:hover { background: rgba(108, 92, 231, 0.05); }
-        .vcard:hover .vtitle { color: var(--c); }
-        
-        /* CIRCUIT BORDER EFFECT */
-        .vcard::after {
-            content: ''; position: absolute; inset: 0; border: 1px solid transparent; transition: 0.3s;
+        .vcard { 
+            background: rgba(10, 10, 20, 0.5); padding: 40px; border: 1px solid var(--border); 
+            position: relative; transition: 0.3s; overflow: hidden;
         }
-        .vcard:hover::after { border-color: var(--c); clip-path: polygon(0 0, 100% 0, 100% 20%, 95% 25%, 95% 75%, 100% 80%, 100% 100%, 0 100%); }
+        .vcard:hover { border-color: var(--c); }
+        .vcard::before {
+            content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: var(--c); z-index: -1; transform: scale(0); transition: 0.4s;
+            clip-path: polygon(0 0, 20% 0, 25% 5%, 75% 5%, 80% 0, 100% 0, 100% 100%, 0 100%);
+        }
+        .vcard:hover::before { transform: scale(1); opacity: 0.1; }
 
-        .vnum { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--p); margin-bottom: 15px; display: block; }
-        .vtitle { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; margin-bottom: 15px; transition: 0.3s; }
-        .vtext { font-size: 0.9rem; color: var(--dim); line-height: 1.8; }
+        .vtitle { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; margin-bottom: 15px; color: var(--white); }
 
-        /* PROOF PROGRESS BARS */
+        /* PROGRESS BARS */
         .prow { margin-bottom: 40px; }
-        .p-meta { display: flex; justify-content: space-between; font-family: 'Space Mono', monospace; font-size: 0.7rem; margin-bottom: 10px; color: var(--c); }
-        .bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.05); position: relative; }
-        .bar-fill { height: 100%; background: var(--c); width: 0%; transition: 1.5s cubic-bezier(0.19, 1, 0.22, 1); box-shadow: 0 0 15px var(--c); }
+        .p-meta { display: flex; justify-content: space-between; font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--c); margin-bottom: 10px; }
+        .bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.05); }
+        .bar-fill { height: 100%; background: var(--c); width: 0%; transition: 2s cubic-bezier(0.19, 1, 0.22, 1); box-shadow: 0 0 15px var(--c); }
 
-        /* FOOTER TERMINAL */
-        footer { padding: 100px 8% 40px; background: #000; text-align: left; font-family: 'Space Mono', monospace; z-index: 2; position: relative; }
-        .term-cmd { color: var(--c); font-size: 1.1rem; margin-bottom: 20px; }
-        .term-out { color: var(--dim); font-size: 0.8rem; line-height: 2; margin-bottom: 40px; }
-        .cursor { display: inline-block; width: 10px; height: 18px; background: var(--c); animation: blink 1s infinite; vertical-align: middle; }
+        /* TYPEWRITER QUOTE */
+        .qbox { background: rgba(108, 92, 231, 0.03); border: 1px solid var(--border); padding: 60px; text-align: center; }
+        .typewriter-q { font-size: 1.5rem; color: var(--white); min-height: 3em; font-weight: 300; }
 
-        .rv { opacity: 0; transform: translateY(20px); transition: 0.6s; }
+        /* TERMINAL FOOTER */
+        footer { padding: 60px 8%; background: #000; font-family: 'Space Mono', monospace; border-top: 1px solid var(--border); }
+        .cmd { color: var(--c); margin-bottom: 10px; font-size: 1.1rem; }
+        .cmd::before { content: '$ '; color: var(--p); }
+        .response { color: var(--dim); font-size: 0.8rem; line-height: 1.8; }
+        .blink { display: inline-block; width: 10px; height: 18px; background: var(--c); animation: blink 1s infinite; vertical-align: middle; }
+
+        .rv { opacity: 0; transform: translateY(20px); transition: 0.8s; }
         .rv.on { opacity: 1; transform: translateY(0); }
     </style>
 </head>
@@ -108,96 +104,105 @@
     <div id="prog"></div>
 
     <nav>
-        <div class="nav-logo"><div class="status-dot"></div>LUCIDYA<span>.SYSTEMS</span></div>
-        <div class="nav-badge" style="font-family: 'Space Mono', monospace; font-size: 0.6rem;">USER: SULTAN_ALQAHTANI</div>
+        <div class="nav-logo">>_LUCIDYA//<span>STRATEGY</span></div>
+        <div class="nav-badge">STATUS: OPTIMIZING_NRR</div>
     </nav>
 
     <header class="hero">
-        <span class="kicker">> INITIALIZING VALUE_PROPOSAL.EXE...</span>
+        <span class="terminal-label">> INITIALIZING_VALUE_PROPOSAL.EXE...</span>
         <h1 class="htitle">
-            THE <span class="glitch" data-text="ARABIC">ARABIC</span> CUSTOMER.<br>
-            <span class="cyan-txt">DECODED.</span>
+            <span id="type-target" class="typing-text"></span><br>
+            <span class="glitch-num" data-text="DECODED.">DECODED.</span>
         </h1>
         <p class="hdesc">
-            7 years of engineering high-stakes customer operations. I bridge the gap between <b>Lucidya’s raw AI intelligence</b> and <b>Executive Trust</b>.
+            7 years of engineering high-stakes customer operations. I bridge the gap between <b>Lucidya’s raw AI</b> and <b>Executive Trust</b>.
         </p>
-        
-        <div class="term-out" style="max-width: 500px;">
-            $ sultan --status<br>
-            > [CCXP_CERTIFIED]: TRUE<br>
-            > [MARKET_EXP]: AMAZON, ALAAN, ZID<br>
-            > [MISSION]: DRIVE_LUCIDYA_NRR
-        </div>
     </header>
 
     <section>
-        <span class="t-label">> RUNNING_GROWTH_STRATEGY.SH</span>
-        <h2 style="font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; margin-bottom: 40px;">How I Scale Value</h2>
+        <span class="terminal-label">> RUN_CORE_VALUES.SH</span>
         <div class="vgrid rv">
             <div class="vcard">
-                <span class="vnum">DATA_ONBOARDING_01</span>
+                <span style="font-family:'Space Mono'; color:var(--p); font-size:0.7rem;">[MODULE_01]</span>
                 <h3 class="vtitle">Time-to-Value Acceleration</h3>
-                <p class="vtext">Enterprise clients don't buy NLP; they buy <b>Business ROI</b>. I compress the window from "First Access" to "Strategic Insight".</p>
+                <p class="vtext">I compress the window from "First Access" to "Strategic Insight" for Enterprise and Gov clients.</p>
             </div>
             <div class="vcard">
-                <span class="vnum">RETENTION_LOOP_02</span>
+                <span style="font-family:'Space Mono'; color:var(--p); font-size:0.7rem;">[MODULE_02]</span>
                 <h3 class="vtitle">Predictive Churn Defense</h3>
-                <p class="vtext">Using <b>ChurnZero & HubSpot</b> to catch silent detractor signals in utilization data before they hit the renewal date.</p>
+                <p class="vtext">Leveraging <b>ChurnZero & HubSpot</b> to intercept at-risk accounts before they hit the renewal cycle.</p>
             </div>
         </div>
     </section>
 
     <section>
-        <span class="t-label">> ANALYZING_HISTORICAL_IMPACT...</span>
+        <span class="terminal-label">> FETCH_IMPACT_METRICS...</span>
         
         <div class="prow rv">
-            <div class="p-meta"><span>CHURN_REDUCTION_SPEED</span> <span>-17% (45 DAYS)</span></div>
-            <div class="bar-bg"><div class="bar-fill" data-width="17%"></div></div>
+            <div class="p-meta"><span>CHURN_REDUCTION</span> <span>-17%</span></div>
+            <div class="bar-bg"><div class="bar-fill" data-target="17%"></div></div>
         </div>
         
-        <div class="prow rv" style="transition-delay: 0.2s;">
+        <div class="prow rv">
             <div class="p-meta"><span>LEAD_TO_LOYAL_CONVERSION</span> <span>57%</span></div>
-            <div class="bar-bg"><div class="bar-fill" data-width="57%"></div></div>
+            <div class="bar-bg"><div class="bar-fill" data-target="57%"></div></div>
         </div>
 
-        <div class="prow rv" style="transition-delay: 0.4s;">
-            <div class="p-meta"><span>SLA_ADHERENCE_PRECISION</span> <span>99.3%</span></div>
-            <div class="bar-bg"><div class="bar-fill" data-width="99%"></div></div>
+        <div class="prow rv">
+            <div class="p-meta"><span>SLA_PRECISION</span> <span>99.3%</span></div>
+            <div class="bar-bg"><div class="bar-fill" data-target="99%"></div></div>
+        </div>
+    </section>
+
+    <section>
+        <div class="qbox rv">
+            <div id="quote-target" class="typewriter-q"></div>
         </div>
     </section>
 
     <footer>
-        <div class="term-cmd">$ sultan --connect --riyadh --lucidya<span class="cursor"></span></div>
-        <div class="term-out">
-            Establishing secure connection...<br>
-            Location: Riyadh, KSA<br>
-            Phone: +966 59 906 1969<br>
-            Email: SultanFq.career@gmail.com<br>
-            Status: Ready to Engineer Lucidya's Success.
+        <div class="cmd">sultan --connect --riyadh --lucidya<span class="blink"></span></div>
+        <div class="response">
+            > Establishing secure link... OK<br>
+            > Location: Riyadh, KSA<br>
+            > Phone: +966 59 906 1969<br>
+            > Email: SultanFq.career@gmail.com<br>
+            > [SYSTEM_READY]
         </div>
-        <p style="font-family: 'Space Mono'; font-size: 0.5rem; opacity: 0.2; letter-spacing: 2px;">© 2026 SULTAN_ALQAHTANI // ALL RIGHTS RESERVED</p>
     </footer>
 
     <script>
         // Progress bar
         window.onscroll = () => {
-            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            let winScroll = document.documentElement.scrollTop;
             let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             document.getElementById("prog").style.width = (winScroll / height) * 100 + "%";
         };
+
+        // Typing Effect Hero
+        const typeText = "THE ARABIC CUSTOMER.";
+        let i = 0;
+        function typeHero() {
+            if (i < typeText.length) {
+                document.getElementById("type-target").innerHTML += typeText.charAt(i);
+                i++;
+                setTimeout(typeHero, 100);
+            } else {
+                document.getElementById("type-target").style.borderRight = "none";
+            }
+        }
+        window.onload = typeHero;
 
         // Neural Network
         const canvas = document.getElementById('net-canvas');
         const ctx = canvas.getContext('2d');
         let width, height, nodes = [];
-
         function init() {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
             nodes = [];
-            for(let i=0; i<60; i++) nodes.push({x: Math.random()*width, y: Math.random()*height, vx: (Math.random()-0.5)*0.4, vy: (Math.random()-0.5)*0.4});
+            for(let i=0; i<60; i++) nodes.push({x:Math.random()*width, y:Math.random()*height, vx:(Math.random()-0.5)*0.5, vy:(Math.random()-0.5)*0.5});
         }
-
         function draw() {
             ctx.clearRect(0,0,width,height);
             ctx.fillStyle = '#00CDB8'; ctx.strokeStyle = 'rgba(108, 92, 231, 0.1)';
@@ -213,21 +218,35 @@
             });
             requestAnimationFrame(draw);
         }
+        init(); draw();
 
-        // Reveal & Progress Bars
-        const observer = new IntersectionObserver(entries => {
+        // Reveal & Progress Bars & Quote Typewriter
+        const quoteText = "I don’t provide support; I Engineer Loyalty. I ensure Lucidya is an Indispensable Strategic Partner.";
+        let qStarted = false;
+
+        const obs = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 if(entry.isIntersecting) {
                     entry.target.classList.add('on');
-                    let fill = entry.target.querySelector('.bar-fill');
-                    if(fill) fill.style.width = fill.getAttribute('data-width');
+                    // Fill Progress Bars
+                    const fill = entry.target.querySelector('.bar-fill');
+                    if(fill) fill.style.width = fill.getAttribute('data-target');
+                    // Start Quote Typewriter
+                    if(entry.target.classList.contains('qbox') && !qStarted) {
+                        qStarted = true;
+                        let qi = 0;
+                        function typeQuote() {
+                            if(qi < quoteText.length) {
+                                document.getElementById("quote-target").innerHTML += quoteText.charAt(qi);
+                                qi++; setTimeout(typeQuote, 30);
+                            }
+                        }
+                        typeQuote();
+                    }
                 }
             });
         }, { threshold: 0.1 });
-        document.querySelectorAll('.rv').forEach(r => observer.observe(r));
-
-        init(); draw();
-        window.onresize = init;
+        document.querySelectorAll('.rv, .qbox').forEach(r => obs.observe(r));
     </script>
 </body>
 </html>
