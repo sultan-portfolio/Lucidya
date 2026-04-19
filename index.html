@@ -3,106 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sultan Alqahtani | Lucidya Value Proposal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>Sultan Alqahtani // Lucidya.Terminal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #020205;
-            --card-bg: rgba(13, 21, 37, 0.7);
+            --bg: #030308;
             --p: #6C5CE7;      /* Lucidya Purple */
             --c: #00CDB8;      /* Lucidya Cyan */
-            --white: #FFFFFF;
-            --text-dim: #94a3b8;
+            --white: #F0F4FF;
+            --dim: rgba(240, 244, 255, 0.4);
             --border: rgba(108, 92, 231, 0.2);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
         body {
             background-color: var(--bg);
             color: var(--white);
             font-family: 'Montserrat', sans-serif;
             overflow-x: hidden;
-            line-height: 1.6;
+            background-image: 
+                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 3px 100%; /* Scanlines effect */
         }
 
-        /* NEURAL NETWORK BACKGROUND */
-        #net-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.3; }
-        
-        /* NOISE OVERLAY */
-        body::after {
-            content: ''; position: fixed; inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-            pointer-events: none; z-index: 1;
-        }
+        #net-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.25; pointer-events: none; }
+        #prog { position: fixed; top: 0; left: 0; height: 2px; background: var(--c); z-index: 9999; width: 0%; box-shadow: 0 0 10px var(--c); }
 
-        #prog { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--p), var(--c)); z-index: 9999; width: 0%; box-shadow: 0 0 15px var(--c); }
-
+        /* TERMINAL NAV */
         nav {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 25px 7%; display: flex; justify-content: space-between; align-items: center;
-            background: linear-gradient(to bottom, rgba(2, 2, 5, 0.9), transparent); backdrop-filter: blur(12px);
+            position: fixed; top: 0; width: 100%; z-index: 100; padding: 20px 6%;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(3, 3, 8, 0.9); border-bottom: 1px solid var(--border); backdrop-filter: blur(10px);
         }
-        .nav-logo { font-family: 'Space Mono', monospace; font-size: 1rem; letter-spacing: 0.1em; color: var(--white); text-decoration: none; }
+        .nav-logo { font-family: 'Space Mono', monospace; font-size: 0.9rem; letter-spacing: 2px; }
         .nav-logo span { color: var(--c); }
-        .nav-badge { border: 1px solid var(--p); color: var(--p); padding: 5px 15px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; }
+        .status-dot { display: inline-block; width: 8px; height: 8px; background: var(--c); border-radius: 50%; margin-right: 10px; animation: blink 1s infinite; }
 
-        /* HERO */
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        /* HERO SECTION */
         .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 8%; position: relative; z-index: 2; }
-        .hkick { font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--c); margin-bottom: 20px; display: flex; align-items: center; gap: 15px; }
-        .hkick::after { content: ''; width: 40px; height: 1px; background: var(--c); }
+        .kicker { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--c); margin-bottom: 20px; display: block; }
         
-        .htitle { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 10vw, 8.5rem); line-height: 0.85; margin-bottom: 20px; }
-        .htitle span { color: var(--p); text-shadow: 0 0 30px rgba(108, 92, 231, 0.4); }
-        .htitle .cyan-txt { color: var(--c); text-shadow: 0 0 30px rgba(0, 205, 184, 0.4); }
+        .htitle { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 10vw, 8rem); line-height: 0.9; margin-bottom: 30px; }
+        .htitle span { color: var(--p); position: relative; }
         
-        .hdesc { font-size: clamp(1rem, 2vw, 1.4rem); font-weight: 300; color: var(--text-dim); max-width: 700px; margin-bottom: 40px; }
-        .hdesc strong { color: var(--white); font-weight: 600; }
+        /* GLITCH EFFECT */
+        .glitch { position: relative; display: inline-block; }
+        .glitch::before, .glitch::after {
+            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.8;
+        }
+        .glitch:hover::before { animation: glitch-anim 0.3s infinite linear alternate-reverse; color: var(--c); z-index: -1; }
+        .glitch:hover::after { animation: glitch-anim 0.3s infinite linear alternate; color: var(--p); z-index: -2; }
 
-        .hstats { display: flex; gap: 50px; flex-wrap: wrap; }
-        .hstat-num { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; color: var(--white); line-height: 1; }
-        .hstat-num .cc { color: var(--c); }
-        .hstat-label { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); margin-top: 5px; }
+        @keyframes glitch-anim {
+            0% { clip-path: inset(10% 0 30% 0); transform: translate(-2px, -2px); }
+            100% { clip-path: inset(40% 0 10% 0); transform: translate(2px, 2px); }
+        }
 
-        /* SECTIONS */
-        section { padding: 100px 8%; position: relative; z-index: 2; max-width: 1400px; margin: 0 auto; }
-        .slabel { font-family: 'Space Mono', monospace; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.4em; text-transform: uppercase; color: var(--c); margin-bottom: 50px; display: flex; align-items: center; gap: 20px; }
-        .slabel::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(0, 205, 184, 0.3), transparent); }
+        .hdesc { font-size: 1.2rem; font-weight: 300; color: var(--dim); max-width: 650px; margin-bottom: 40px; font-family: 'Montserrat', sans-serif; }
+        .hdesc b { color: var(--white); }
 
-        .stitle { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem, 5vw, 4.5rem); margin-bottom: 40px; letter-spacing: 0.02em; }
-        .stitle span { color: var(--p); }
+        /* TERMINAL BLOCKS */
+        section { padding: 80px 8%; z-index: 2; position: relative; }
+        .t-label { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--c); margin-bottom: 40px; display: block; }
 
-        /* GRID CARDS */
-        .vgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .vgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--border); border: 1px solid var(--border); }
         @media(max-width: 900px) { .vgrid { grid-template-columns: 1fr; } }
 
-        .vcard { background: var(--card-bg); border: 1px solid var(--border); padding: 50px; position: relative; transition: all 0.4s ease; backdrop-filter: blur(10px); }
-        .vcard:hover { border-color: var(--c); transform: translateY(-5px); background: rgba(0, 205, 184, 0.03); }
-        .vcard::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--p); opacity: 0; transition: 0.3s; }
-        .vcard:hover::before { opacity: 1; }
+        .vcard { background: var(--bg); padding: 50px; position: relative; transition: 0.3s; }
+        .vcard:hover { background: rgba(108, 92, 231, 0.05); }
+        .vcard:hover .vtitle { color: var(--c); }
+        
+        /* CIRCUIT BORDER EFFECT */
+        .vcard::after {
+            content: ''; position: absolute; inset: 0; border: 1px solid transparent; transition: 0.3s;
+        }
+        .vcard:hover::after { border-color: var(--c); clip-path: polygon(0 0, 100% 0, 100% 20%, 95% 25%, 95% 75%, 100% 80%, 100% 100%, 0 100%); }
 
-        .vnum { font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--p); margin-bottom: 20px; display: block; opacity: 0.6; }
-        .vcard-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 15px; }
-        .vtext { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 25px; line-height: 1.8; }
-        .vtext strong { color: var(--white); }
+        .vnum { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--p); margin-bottom: 15px; display: block; }
+        .vtitle { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; margin-bottom: 15px; transition: 0.3s; }
+        .vtext { font-size: 0.9rem; color: var(--dim); line-height: 1.8; }
 
-        .vtag { display: inline-block; background: rgba(108, 92, 231, 0.1); border: 1px solid rgba(108, 92, 231, 0.2); color: var(--white); font-size: 0.55rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 12px; border-radius: 2px; margin-right: 6px; }
+        /* PROOF PROGRESS BARS */
+        .prow { margin-bottom: 40px; }
+        .p-meta { display: flex; justify-content: space-between; font-family: 'Space Mono', monospace; font-size: 0.7rem; margin-bottom: 10px; color: var(--c); }
+        .bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.05); position: relative; }
+        .bar-fill { height: 100%; background: var(--c); width: 0%; transition: 1.5s cubic-bezier(0.19, 1, 0.22, 1); box-shadow: 0 0 15px var(--c); }
 
-        /* THE 90 DAY PLAN GRID */
-        .tgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 40px; background: var(--border); border: 1px solid var(--border); }
-        @media(max-width: 800px) { .tgrid { grid-template-columns: 1fr; } }
-        .tphase { background: var(--bg); padding: 40px; }
-        .tph { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; margin-bottom: 5px; }
-        .tdays { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--c); letter-spacing: 0.2em; margin-bottom: 20px; display: block; }
-        .tlist { list-style: none; }
-        .tlist li { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 12px; display: flex; gap: 10px; }
-        .tlist li::before { content: '→'; color: var(--c); }
+        /* FOOTER TERMINAL */
+        footer { padding: 100px 8% 40px; background: #000; text-align: left; font-family: 'Space Mono', monospace; z-index: 2; position: relative; }
+        .term-cmd { color: var(--c); font-size: 1.1rem; margin-bottom: 20px; }
+        .term-out { color: var(--dim); font-size: 0.8rem; line-height: 2; margin-bottom: 40px; }
+        .cursor { display: inline-block; width: 10px; height: 18px; background: var(--c); animation: blink 1s infinite; vertical-align: middle; }
 
-        /* FOOTER */
-        footer { padding: 80px 8%; border-top: 1px solid var(--border); text-align: center; background: #000; position: relative; z-index: 2; }
-        .f-name { font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; margin-bottom: 10px; }
-        .f-contact { font-size: 0.85rem; color: var(--text-dim); letter-spacing: 0.05em; }
-        .f-contact a { color: var(--white); text-decoration: none; border-bottom: 1px solid var(--c); }
-
-        .rv { opacity: 0; transform: translateY(30px); transition: 0.8s ease; }
+        .rv { opacity: 0; transform: translateY(20px); transition: 0.6s; }
         .rv.on { opacity: 1; transform: translateY(0); }
     </style>
 </head>
@@ -112,153 +108,85 @@
     <div id="prog"></div>
 
     <nav>
-        <a href="#" class="nav-logo">LUCIDYA<span>.STRATEGY</span></a>
-        <div class="nav-badge">SULTAN ALQAHTANI · SR. CSM</div>
+        <div class="nav-logo"><div class="status-dot"></div>LUCIDYA<span>.SYSTEMS</span></div>
+        <div class="nav-badge" style="font-family: 'Space Mono', monospace; font-size: 0.6rem;">USER: SULTAN_ALQAHTANI</div>
     </nav>
 
     <header class="hero">
-        <div class="hkick">Value Engineering Proposal</div>
-        <h1 class="htitle">The <span>Arabic</span> Customer<br><span class="cyan-txt">Decoded.</span></h1>
+        <span class="kicker">> INITIALIZING VALUE_PROPOSAL.EXE...</span>
+        <h1 class="htitle">
+            THE <span class="glitch" data-text="ARABIC">ARABIC</span> CUSTOMER.<br>
+            <span class="cyan-txt">DECODED.</span>
+        </h1>
         <p class="hdesc">
-            7 years of engineering customer success across <strong>Amazon, Alaan, and Zid.</strong> I bridge the gap between Lucidya's raw AI intelligence and the <strong>trust</strong> required by Enterprise & Government leaders.
+            7 years of engineering high-stakes customer operations. I bridge the gap between <b>Lucidya’s raw AI intelligence</b> and <b>Executive Trust</b>.
         </p>
-        <div class="hstats">
-            <div class="hstat">
-                <div class="hstat-num">−<span class="counter" data-target="17">0</span><span class="cc">%</span></div>
-                <div class="hstat-label">Churn Reduction Achievement</div>
-            </div>
-            <div class="hstat">
-                <div class="hstat-num"><span class="counter" data-target="57">0</span><span class="cc">%</span></div>
-                <div class="hstat-label">Lead-to-Loyal Rate</div>
-            </div>
-            <div class="hstat">
-                <div class="hstat-num"><span class="counter" data-target="99">0</span><span class="cc">.3%</span></div>
-                <div class="hstat-label">SLA Adherence in Peak Seasons</div>
-            </div>
+        
+        <div class="term-out" style="max-width: 500px;">
+            $ sultan --status<br>
+            > [CCXP_CERTIFIED]: TRUE<br>
+            > [MARKET_EXP]: AMAZON, ALAAN, ZID<br>
+            > [MISSION]: DRIVE_LUCIDYA_NRR
         </div>
     </header>
 
-    <section id="strategy">
-        <div class="slabel rv">The Approach</div>
-        <h2 class="stitle">How I Scale Value & <span>NRR</span></h2>
-        
-        <div class="vgrid">
-            <div class="vcard rv">
-                <span class="vnum">// 01</span>
-                <h3 class="vcard-title">Value Realization & Time-to-Value</h3>
-                <p class="vtext">
-                    Enterprise clients don't buy "Arabic NLP"; they buy <strong>Business Clarity</strong>. My priority is compressing the window between onboarding and the client's first "Aha!" moment with Lucidya's data.
-                </p>
-                <span class="vtag">Enterprise CX</span><span class="vtag">Adoption Strategy</span>
+    <section>
+        <span class="t-label">> RUNNING_GROWTH_STRATEGY.SH</span>
+        <h2 style="font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; margin-bottom: 40px;">How I Scale Value</h2>
+        <div class="vgrid rv">
+            <div class="vcard">
+                <span class="vnum">DATA_ONBOARDING_01</span>
+                <h3 class="vtitle">Time-to-Value Acceleration</h3>
+                <p class="vtext">Enterprise clients don't buy NLP; they buy <b>Business ROI</b>. I compress the window from "First Access" to "Strategic Insight".</p>
             </div>
-
-            <div class="vcard rv" style="transition-delay: 0.1s;">
-                <span class="vnum">// 02</span>
-                <h3 class="vcard-title">Metric-Driven Churn Prevention</h3>
-                <p class="vtext">
-                    I treat <strong>ChurnZero & HubSpot</strong> as my cockpit. By monitoring utilization patterns and health scores, I identify detractor signals before they become a cancellation request.
-                </p>
-                <span class="vtag">NRR Focused</span><span class="vtag">Data-Led CSM</span>
-            </div>
-
-            <div class="vcard rv">
-                <span class="vnum">// 03</span>
-                <h3 class="vcard-title">Closed-Loop VoC (Voice of Customer)</h3>
-                <p class="vtext">
-                    Acting as the internal bridge between clients and the product team. At Zid, I mapped NPS signals directly to product fixes, reducing churn by <strong>17% in just 45 days.</strong>
-                </p>
-                <span class="vtag">NPS Obsession</span><span class="vtag">Product Bridge</span>
-            </div>
-
-            <div class="vcard rv" style="transition-delay: 0.1s;">
-                <span class="vnum">// 04</span>
-                <h3 class="vcard-title">Government & Enterprise Relationship</h3>
-                <p class="vtext">
-                    Navigating high-stakes <strong>B2B relationships in Saudi Arabia</strong>. I understand the cultural nuances of Riyadh's government sector and Jeddah's enterprise brands.
-                </p>
-                <span class="vtag">Stakeholder Mgmt</span><span class="vtag">Saudi Market Native</span>
+            <div class="vcard">
+                <span class="vnum">RETENTION_LOOP_02</span>
+                <h3 class="vtitle">Predictive Churn Defense</h3>
+                <p class="vtext">Using <b>ChurnZero & HubSpot</b> to catch silent detractor signals in utilization data before they hit the renewal date.</p>
             </div>
         </div>
     </section>
 
-    <section id="roadmap">
-        <div class="slabel rv">The 90-Day Plan</div>
-        <h2 class="stitle">Accelerating <span>Impact</span> From Day 01</h2>
-        <div class="tgrid rv">
-            <div class="tphase">
-                <h3 class="tph">Learn</h3>
-                <span class="tdays">// DAYS 1-30</span>
-                <ul class="tlist">
-                    <li>Master Lucidya's NLU capabilities</li>
-                    <li>Audit top 10 enterprise account health</li>
-                    <li>Shadow sales-to-success handovers</li>
-                </ul>
-            </div>
-            <div class="tphase">
-                <h3 class="tph">Build</h3>
-                <span class="tdays">// DAYS 31-60</span>
-                <ul class="tlist">
-                    <li>Design Arabic-first onboarding playbook</li>
-                    <li>Establish proactive NPS response loops</li>
-                    <li>Identify expansion opportunities (Upsell)</li>
-                </ul>
-            </div>
-            <div class="tphase">
-                <h3 class="tph">Drive</h3>
-                <span class="tdays">// DAYS 61-90</span>
-                <ul class="tlist">
-                    <li>Deliver first QBR with clear ROI data</li>
-                    <li>Stabilize at-risk accounts health scores</li>
-                    <li>Close first cross-sell opportunity</li>
-                </ul>
-            </div>
+    <section>
+        <span class="t-label">> ANALYZING_HISTORICAL_IMPACT...</span>
+        
+        <div class="prow rv">
+            <div class="p-meta"><span>CHURN_REDUCTION_SPEED</span> <span>-17% (45 DAYS)</span></div>
+            <div class="bar-bg"><div class="bar-fill" data-width="17%"></div></div>
+        </div>
+        
+        <div class="prow rv" style="transition-delay: 0.2s;">
+            <div class="p-meta"><span>LEAD_TO_LOYAL_CONVERSION</span> <span>57%</span></div>
+            <div class="bar-bg"><div class="bar-fill" data-width="57%"></div></div>
+        </div>
+
+        <div class="prow rv" style="transition-delay: 0.4s;">
+            <div class="p-meta"><span>SLA_ADHERENCE_PRECISION</span> <span>99.3%</span></div>
+            <div class="bar-bg"><div class="bar-fill" data-width="99%"></div></div>
         </div>
     </section>
 
     <footer>
-        <h2 class="f-name">Sultan Alqahtani</h2>
-        <p class="f-contact">
-            CCXP® · Riyadh, Saudi Arabia · <a href="mailto:sultanfq.career@gmail.com">sultanfq.career@gmail.com</a> · +966 59 906 1969
-        </p>
+        <div class="term-cmd">$ sultan --connect --riyadh --lucidya<span class="cursor"></span></div>
+        <div class="term-out">
+            Establishing secure connection...<br>
+            Location: Riyadh, KSA<br>
+            Phone: +966 59 906 1969<br>
+            Email: SultanFq.career@gmail.com<br>
+            Status: Ready to Engineer Lucidya's Success.
+        </div>
+        <p style="font-family: 'Space Mono'; font-size: 0.5rem; opacity: 0.2; letter-spacing: 2px;">© 2026 SULTAN_ALQAHTANI // ALL RIGHTS RESERVED</p>
     </footer>
 
     <script>
-        // Progress Bar
-        window.addEventListener('scroll', () => {
-            let scroll = document.documentElement.scrollTop;
+        // Progress bar
+        window.onscroll = () => {
+            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
             let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            document.getElementById('prog').style.width = (scroll / height) * 100 + '%';
-        });
+            document.getElementById("prog").style.width = (winScroll / height) * 100 + "%";
+        };
 
-        // Intersection Observer for Reveal
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if(entry.isIntersecting) {
-                    entry.target.classList.add('on');
-                }
-            });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.rv').forEach(el => observer.observe(el));
-
-        // Animated Counters
-        const counterObserver = new IntersectionObserver((entries, obs) => {
-            entries.forEach(entry => {
-                if(entry.isIntersecting) {
-                    const target = entry.target;
-                    const endVal = parseInt(target.getAttribute('data-target'));
-                    let startVal = 0;
-                    const timer = setInterval(() => {
-                        startVal += Math.ceil(endVal / 30);
-                        if(startVal >= endVal) { target.innerText = endVal; clearInterval(timer); } 
-                        else { target.innerText = startVal; }
-                    }, 40);
-                    obs.unobserve(target);
-                }
-            });
-        }, { threshold: 0.5 });
-        document.querySelectorAll('.counter').forEach(c => counterObserver.observe(c));
-
-        // NEURAL NETWORK (CANVAS)
+        // Neural Network
         const canvas = document.getElementById('net-canvas');
         const ctx = canvas.getContext('2d');
         let width, height, nodes = [];
@@ -267,36 +195,39 @@
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
             nodes = [];
-            for(let i=0; i<80; i++) {
-                nodes.push({
-                    x: Math.random() * width, y: Math.random() * height,
-                    vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
-                    r: Math.random() * 2 + 1
-                });
-            }
+            for(let i=0; i<60; i++) nodes.push({x: Math.random()*width, y: Math.random()*height, vx: (Math.random()-0.5)*0.4, vy: (Math.random()-0.5)*0.4});
         }
 
         function draw() {
-            ctx.clearRect(0, 0, width, height);
-            ctx.fillStyle = '#00CDB8';
-            ctx.strokeStyle = 'rgba(108, 92, 231, 0.15)';
-            for(let i=0; i<nodes.length; i++) {
-                let n = nodes[i]; n.x += n.vx; n.y += n.vy;
-                if(n.x < 0 || n.x > width) n.vx *= -1;
-                if(n.y < 0 || n.y > height) n.vy *= -1;
-                ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI*2); ctx.fill();
+            ctx.clearRect(0,0,width,height);
+            ctx.fillStyle = '#00CDB8'; ctx.strokeStyle = 'rgba(108, 92, 231, 0.1)';
+            nodes.forEach((n, i) => {
+                n.x += n.vx; n.y += n.vy;
+                if(n.x<0 || n.x>width) n.vx *= -1; if(n.y<0 || n.y>height) n.vy *= -1;
+                ctx.beginPath(); ctx.arc(n.x, n.y, 1.5, 0, Math.PI*2); ctx.fill();
                 for(let j=i+1; j<nodes.length; j++) {
                     let n2 = nodes[j];
-                    let d = Math.hypot(n.x - n2.x, n.y - n2.y);
-                    if(d < 150) {
-                        ctx.beginPath(); ctx.moveTo(n.x, n.y); ctx.lineTo(n2.x, n2.y); ctx.stroke();
-                    }
+                    let d = Math.hypot(n.x-n2.x, n.y-n2.y);
+                    if(d<150) { ctx.beginPath(); ctx.moveTo(n.x, n.y); ctx.lineTo(n2.x, n2.y); ctx.stroke(); }
                 }
-            }
+            });
             requestAnimationFrame(draw);
         }
-        window.addEventListener('resize', init);
+
+        // Reveal & Progress Bars
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('on');
+                    let fill = entry.target.querySelector('.bar-fill');
+                    if(fill) fill.style.width = fill.getAttribute('data-width');
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.rv').forEach(r => observer.observe(r));
+
         init(); draw();
+        window.onresize = init;
     </script>
 </body>
 </html>
