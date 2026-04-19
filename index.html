@@ -3,137 +3,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SULTAN // LUCIDYA_NEURAL_OS_v1.0</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>Sultan Alqahtani // Lucidya.Neural_OS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #030308;
-            --p: #6C5CE7;      /* Lucidya Purple */
-            --c: #00CDB8;      /* Lucidya Cyan */
-            --white: #F0F4FF;
-            --dim: rgba(240, 244, 255, 0.4);
-            --border: rgba(108, 92, 231, 0.15);
-            --glow: 0 0 15px rgba(0, 205, 184, 0.3);
+            --bg: #030308; --bg2: #080C18;
+            --p: #6C5CE7; --pl: #9B8FF0; --pg: rgba(108, 92, 231, 0.1);
+            --c: #00CDB8; --cl: #33D9C8; --cg: rgba(0, 205, 184, 0.08);
+            --w: #F0F4FF; --wd: rgba(240, 244, 255, 0.45);
+            --border: rgba(108, 92, 231, 0.18);
+            --mono: 'Space Mono', monospace;
+            --sans: 'Space Grotesk', sans-serif;
+            --bebas: 'Bebas Neue', sans-serif;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
         body {
             background-color: var(--bg);
-            color: var(--white);
-            font-family: 'Montserrat', sans-serif;
+            color: var(--w);
+            font-family: var(--sans);
             overflow-x: hidden;
-            /* CRT SCANLINES EFFECT */
-            background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
-            background-size: 100% 3px, 3px 100%;
+            line-height: 1.6;
+            background-image: 
+                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.22) 50%),
+                linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+            background-size: 100% 4px, 3px 100%; /* CRT Scanlines */
         }
 
         #net-canvas { position: fixed; inset: 0; z-index: 0; opacity: 0.25; pointer-events: none; }
-        #prog { position: fixed; top: 0; left: 0; height: 3px; background: var(--c); z-index: 9999; width: 0%; box-shadow: var(--glow); }
+        #prog { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--p), var(--c)); z-index: 9999; width: 0%; box-shadow: 0 0 15px var(--c); }
 
-        /* STATUS BAR - THE OS FEEL */
+        /* OS STATUS BAR */
         .sbar {
             position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
             background: rgba(3, 3, 8, 0.98); border-bottom: 1px solid var(--border);
             padding: 8px 6%; display: flex; justify-content: space-between; align-items: center;
-            font-family: 'Space Mono', monospace; font-size: 0.55rem; color: var(--dim); letter-spacing: 1px;
+            font-family: var(--mono); font-size: 0.55rem; color: var(--wd);
         }
-        .status-online { color: #2ecc71; display: flex; align-items: center; gap: 8px; }
-        .dot { width: 6px; height: 6px; background: #2ecc71; border-radius: 50%; animation: blink 1s infinite; box-shadow: 0 0 5px #2ecc71; }
+        .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 5px; background: #2ECC71; box-shadow: 0 0 8px #2ECC71; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
         /* NAV */
         nav {
-            position: fixed; top: 32px; width: 100%; z-index: 100; padding: 25px 6%;
+            position: fixed; top: 32px; width: 100%; z-index: 100; padding: 20px 6%;
             display: flex; justify-content: space-between; align-items: center;
             background: linear-gradient(to bottom, var(--bg), transparent); backdrop-filter: blur(8px);
         }
-        .nlogo { font-family: 'Space Mono', monospace; font-size: 1rem; font-weight: 700; color: var(--white); text-decoration: none; }
+        .nlogo { font-family: var(--mono); font-size: 0.9rem; font-weight: 700; color: var(--w); text-decoration: none; }
         .nlogo span { color: var(--c); }
-        .nbadge { border: 1px solid var(--p); color: var(--p); padding: 5px 12px; font-size: 0.5rem; font-family: 'Space Mono'; text-transform: uppercase; background: rgba(108, 92, 231, 0.05); }
+        .nbadge { border: 1px solid var(--p); color: var(--p); padding: 5px 14px; font-size: 0.5rem; font-family: var(--mono); text-transform: uppercase; background: var(--pg); }
 
         /* HERO */
-        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 8%; position: relative; z-index: 2; }
-        .t-prompt { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--c); margin-bottom: 25px; display: block; opacity: 0; animation: fup 0.5s 0.2s forwards; }
-        
-        .hh1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 12vw, 9.5rem); line-height: 0.85; margin-bottom: 30px; letter-spacing: -2px; opacity: 0; animation: fup 0.6s 0.4s forwards; }
+        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 130px 8% 80px; position: relative; z-index: 2; }
+        .t-prompt { font-family: var(--mono); font-size: 0.75rem; color: var(--c); margin-bottom: 25px; display: block; }
+        .hh1 { font-family: var(--bebas); font-size: clamp(3.5rem, 12vw, 9.5rem); line-height: 0.85; margin-bottom: 20px; letter-spacing: -2px; }
         .hh1 .pp { color: var(--p); text-shadow: 0 0 40px rgba(108, 92, 231, 0.4); }
-        .hh1 .cc { color: var(--c); text-shadow: var(--glow); }
+        .hh1 .cc { color: var(--c); text-shadow: 0 0 15px rgba(0, 205, 184, 0.3); }
 
-        /* GLITCH HOVER */
-        .glitch-wrap { display: inline-block; position: relative; cursor: pointer; }
-        .glitch-wrap:hover::before { content: attr(data-text); position: absolute; left: 2px; text-shadow: -2px 0 var(--p); clip: rect(44px, 450px, 56px, 0); animation: glitch-anim 0.4s infinite linear alternate-reverse; }
-        .glitch-wrap:hover::after { content: attr(data-text); position: absolute; left: -2px; text-shadow: -2px 0 var(--c); clip: rect(44px, 450px, 56px, 0); animation: glitch-anim2 0.4s infinite linear alternate-reverse; }
+        .glitch { position: relative; display: inline-block; }
+        .glitch::before, .glitch::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.8; }
+        .glitch:hover::before { animation: g1 0.4s infinite linear alternate-reverse; color: var(--c); z-index: -1; }
+        .glitch:hover::after { animation: g2 0.4s infinite linear alternate; color: var(--p); z-index: -2; }
+        @keyframes g1 { 0% { clip-path: inset(10% 0 30% 0); transform: translate(-3px, -2px); } 100% { clip-path: inset(40% 0 10% 0); transform: translate(3px, 2px); } }
+        @keyframes g2 { 0% { clip-path: inset(50% 0 5% 0); transform: translate(3px, 2px); } 100% { clip-path: inset(10% 0 60% 0); transform: translate(-3px, -2px); } }
 
-        @keyframes glitch-anim { 0% { clip: rect(10px, 9999px, 20px, 0); transform: scale(1.05); } 100% { clip: rect(80px, 9999px, 90px, 0); } }
-        @keyframes glitch-anim2 { 0% { clip: rect(50px, 9999px, 60px, 0); transform: scale(0.95); } 100% { clip: rect(20px, 9999px, 30px, 0); } }
-
-        .hdesc { font-size: clamp(1.1rem, 2vw, 1.4rem); font-weight: 300; color: var(--dim); max-width: 800px; line-height: 1.6; opacity: 0; animation: fup 0.6s 0.6s forwards; }
-        .hdesc b { color: var(--white); font-weight: 700; }
+        .hdesc { font-size: clamp(1.1rem, 2vw, 1.4rem); font-weight: 300; color: var(--wd); max-width: 800px; line-height: 1.7; margin-bottom: 40px; }
+        .hdesc b { color: var(--w); font-weight: 700; }
         .hdesc .hi { color: var(--c); font-weight: 600; border-bottom: 1px solid var(--c); }
 
-        /* DATA DASHBOARD STATS */
-        .hstats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: var(--border); margin-top: 60px; border: 1px solid var(--border); opacity: 0; animation: fup 0.6s 0.8s forwards; }
+        /* DASHBOARD STATS */
+        .hstats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: var(--border); margin-top: 40px; border: 1px solid var(--border); }
         @media(max-width: 800px) { .hstats { grid-template-columns: 1fr 1fr; } }
-        
         .hstat { background: var(--bg); padding: 30px 25px; position: relative; overflow: hidden; }
-        .hstat-label { font-family: 'Space Mono', monospace; font-size: 0.45rem; color: var(--dim); text-transform: uppercase; margin-bottom: 10px; display: block; letter-spacing: 2px; }
-        .hstat-num { font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; line-height: 1; color: var(--white); }
+        .hstat-label { font-family: var(--mono); font-size: 0.45rem; color: var(--wd); text-transform: uppercase; margin-bottom: 10px; display: block; letter-spacing: 2px; }
+        .hstat-num { font-family: var(--bebas); font-size: 3.5rem; line-height: 1; color: var(--w); }
         .hstat-num span { color: var(--c); }
-        .hstat-bar { height: 2px; background: rgba(255,255,255,0.05); margin-top: 15px; position: relative; overflow: hidden; }
-        .hstat-fill { position: absolute; top: 0; left: 0; height: 100%; background: linear-gradient(90deg, var(--p), var(--c)); width: 0%; transition: 2.5s cubic-bezier(0.19, 1, 0.22, 1); box-shadow: var(--glow); }
+        .hstat-bar { height: 2px; background: rgba(255,255,255,0.05); margin-top: 15px; position: relative; }
+        .hstat-fill { position: absolute; top: 0; left: 0; height: 100%; background: linear-gradient(90deg, var(--p), var(--c)); width: 0%; transition: 2.5s cubic-bezier(0.19, 1, 0.22, 1); }
 
-        /* MODULE CARDS - CIRCUIT STYLE */
-        section { padding: 120px 8%; z-index: 2; position: relative; }
-        .s-label { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--c); margin-bottom: 50px; display: flex; align-items: center; gap: 20px; }
+        /* SECTIONS */
+        section { padding: 120px 8%; z-index: 2; position: relative; max-width: 1400px; margin: 0 auto; }
+        .s-label { font-family: var(--mono); font-size: 0.6rem; color: var(--c); margin-bottom: 50px; display: flex; align-items: center; gap: 20px; }
         .s-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
+        .stitle { font-family: var(--bebas); font-size: clamp(2.5rem, 6vw, 5rem); margin-bottom: 50px; }
+        .stitle .acc { color: var(--p); }
 
-        .stitle { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem, 6vw, 5.5rem); margin-bottom: 60px; letter-spacing: 1px; }
-
+        /* VALUE CARDS - DEEP CONTENT */
         .vgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
         @media(max-width: 900px) { .vgrid { grid-template-columns: 1fr; } }
-
         .vcard { 
-            background: rgba(10, 14, 26, 0.7); padding: 55px; border: 1px solid var(--border); 
-            position: relative; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1); backdrop-filter: blur(12px);
+            background: rgba(10, 14, 26, 0.7); padding: 50px; border: 1px solid var(--border); 
+            position: relative; transition: 0.5s ease; backdrop-filter: blur(12px);
         }
-        .vcard:hover { border-color: var(--c); transform: translateY(-10px) scale(1.02); background: rgba(0, 205, 184, 0.03); }
-        
-        /* CIRCUIT BOARD DECORATION ON HOVER */
-        .vcard::before { content: ''; position: absolute; inset: 0; border: 1px solid transparent; transition: 0.4s; pointer-events: none; }
+        .vcard:hover { border-color: var(--c); transform: translateY(-10px); background: rgba(0, 205, 184, 0.02); }
         .vcard:hover::before {
-            border-image: linear-gradient(135deg, var(--c) 15%, transparent 15%, transparent 85%, var(--p) 85%) 1;
-            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 20%, 3% 15%, 3% 0);
+            content: ''; position: absolute; inset: 0; border: 1px solid var(--c);
+            clip-path: polygon(0 0, 100% 0, 100% 20%, 98% 25%, 98% 75%, 100% 80%, 100% 100%, 0 100%);
         }
+        .vnum { font-family: var(--mono); font-size: 0.65rem; color: var(--p); margin-bottom: 20px; display: block; letter-spacing: 3px; }
+        .vcard-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 18px; color: var(--w); }
+        .vtext { font-size: 0.9rem; color: var(--wd); line-height: 1.8; margin-bottom: 20px; }
+        .vtext b { color: var(--w); }
+        .vtag { display: inline-block; background: var(--pg); border: 1px solid var(--border); color: var(--pl); font-family: var(--mono); font-size: 0.45rem; padding: 4px 10px; border-radius: 2px; margin-right: 6px; text-transform: uppercase; }
 
-        .vnum { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--p); margin-bottom: 20px; display: block; letter-spacing: 3px; }
-        .vcard-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 20px; color: var(--white); }
-        .vtext { font-size: 0.95rem; color: var(--dim); line-height: 1.8; font-weight: 300; }
-        .vtext b { color: var(--white); font-weight: 600; }
+        /* PROOF ROWS - DASHBOARD STYLE */
+        .pgrid { display: flex; flex-direction: column; gap: 2px; background: var(--border); border: 1px solid var(--border); margin-top: 30px; }
+        .prow { 
+            background: var(--bg); display: grid; grid-template-columns: 180px 1fr 1fr; gap: 0; padding: 40px; 
+            border-left: 3px solid var(--p); transition: 0.3s;
+        }
+        .prow:hover { border-left-color: var(--c); background: var(--bg2); }
+        @media(max-width: 1000px) { .prow { grid-template-columns: 1fr; gap: 30px; } }
+        .pnum-col { border-right: 1px solid rgba(255,255,255,0.05); padding-right: 30px; display: flex; flex-direction: column; justify-content: center; }
+        .pbig { font-family: var(--mono); font-size: 2.8rem; font-weight: 700; color: var(--c); line-height: 1; }
+        .pbar { height: 3px; background: rgba(255,255,255,0.05); margin: 12px 0; position: relative; overflow: hidden; }
+        .pbar-fill { height: 100%; background: linear-gradient(90deg, var(--p), var(--c)); width: 0%; transition: 2s ease; }
+        .plabel { font-family: var(--mono); font-size: 0.45rem; color: var(--wd); text-transform: uppercase; letter-spacing: 1px; }
+        .pctx { padding: 0 40px; border-right: 1px solid rgba(255,255,255,0.05); }
+        .pctx:last-child { border-right: none; }
+        .pco { font-family: var(--mono); font-size: 0.5rem; color: var(--p); margin-bottom: 10px; text-transform: uppercase; }
+        .pdesc { font-size: 0.85rem; color: var(--wd); line-height: 1.7; }
+        .pimp { font-family: var(--mono); font-size: 0.65rem; color: var(--c); font-weight: 700; margin-top: 15px; }
 
-        .vtag { display: inline-block; background: rgba(108, 92, 231, 0.1); border: 1px solid rgba(108, 92, 231, 0.2); color: var(--pl); font-family: 'Space Mono'; font-size: 0.45rem; padding: 4px 10px; border-radius: 2px; margin-top: 25px; margin-right: 8px; text-transform: uppercase; }
+        /* 90 DAY PLAN GRID */
+        .tgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--border); margin-top: 40px; }
+        @media(max-width: 800px) { .tgrid { grid-template-columns: 1fr; } }
+        .tphase { background: var(--bg2); padding: 45px 35px; transition: 0.3s; }
+        .tphase:hover { background: var(--bg); }
+        .tph { font-family: var(--mono); font-size: 1.6rem; font-weight: 700; margin-bottom: 5px; }
+        .tdays { font-family: var(--mono); font-size: 0.5rem; color: var(--c); letter-spacing: 2px; margin-bottom: 20px; display: block; }
+        .tlist { list-style: none; }
+        .tlist li { font-size: 0.8rem; color: var(--wd); margin-bottom: 14px; display: flex; gap: 12px; }
+        .tlist li::before { content: '▸'; color: var(--c); flex-shrink: 0; }
 
-        /* TERMINAL OUTPUT LOG */
-        .output-box { background: rgba(0,0,0,0.8); border: 1px solid var(--border); padding: 45px; margin-top: 80px; font-family: 'Space Mono', monospace; position: relative; border-left: 4px solid var(--p); }
-        .output-box::before { content: 'SYSTEM_LOG // SULTAN_ALQAHTANI'; position: absolute; top: -12px; left: 20px; background: var(--bg); padding: 0 15px; font-size: 0.55rem; color: var(--p); letter-spacing: 2px; }
-        .typed-output { font-size: clamp(1rem, 1.5vw, 1.2rem); color: var(--white); min-height: 4em; line-height: 1.7; }
-        .cursor { display: inline-block; width: 10px; height: 1.2em; background: var(--c); animation: blink 0.8s infinite; vertical-align: middle; margin-left: 8px; }
+        /* OUTPUT LOG BOX */
+        .outbox { background: #000; border: 1px solid var(--border); padding: 45px; margin-top: 80px; font-family: var(--mono); border-left: 4px solid var(--p); }
+        .outbox-title { font-size: 0.55rem; color: var(--p); margin-bottom: 20px; letter-spacing: 3px; display: block; }
+        .typed-text { font-size: 1.2rem; color: var(--w); min-height: 4em; line-height: 1.7; }
+        .cursor { display: inline-block; width: 10px; height: 1.2em; background: var(--c); animation: blink 0.8s infinite; vertical-align: middle; }
 
         /* FOOTER */
-        footer { padding: 120px 8% 60px; background: #000; border-top: 1px solid var(--border); z-index: 2; position: relative; }
-        .f-cmd { font-family: 'Space Mono', monospace; font-size: clamp(1.2rem, 3vw, 2rem); color: var(--c); margin-bottom: 40px; }
+        footer { padding: 120px 8% 60px; background: #000; border-top: 1px solid var(--border); }
+        .f-cmd { font-family: var(--mono); font-size: clamp(1.2rem, 3vw, 2rem); color: var(--c); margin-bottom: 40px; }
         .f-cmd span { color: var(--p); }
-        .f-info { font-family: 'Space Mono', monospace; font-size: 0.85rem; color: var(--dim); line-height: 2.2; }
-        .f-info a { color: var(--white); text-decoration: none; border-bottom: 1px solid var(--c); padding-bottom: 2px; transition: 0.3s; }
-        .f-info a:hover { color: var(--c); letter-spacing: 1px; }
+        .f-info { font-family: var(--mono); font-size: 0.8rem; color: var(--wd); line-height: 2.2; }
+        .f-info a { color: var(--w); text-decoration: none; border-bottom: 1px solid var(--c); }
 
-        /* ANIMATIONS */
         .rv { opacity: 0; transform: translateY(40px); transition: 1s cubic-bezier(0.19, 1, 0.22, 1); }
         .rv.on { opacity: 1; transform: translateY(0); }
-        @keyframes fup { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: var(--p); }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
     </style>
 </head>
 <body>
@@ -142,29 +161,24 @@
     <div id="prog"></div>
 
     <div class="sbar">
-        <div class="sb-l">
-            <span><span class="dot g"></span> SYSTEM_LIVE</span>
-            <span style="margin: 0 15px; opacity: 0.2;">|</span>
-            <span>USER: SULTAN_ALQAHTANI</span>
-            <span style="margin: 0 15px; opacity: 0.2;">|</span>
-            <span style="color:var(--c)">LUCIDYA_CSM_CORE_v1.0</span>
-        </div>
-        <div id="clock">AST 00:00:00</div>
+        <div class="sb-l"><span class="dot"></span> SYSTEM_LIVE // SULTAN_LUCIDYA_v2.0</div>
+        <div id="sys-clock">AST 00:00:00</div>
     </div>
 
-    <nav id="nav">
+    <nav>
         <a href="#" class="nlogo">~/LUCIDYA<span>.SYSTEMS</span></a>
-        <div class="nbadge">MODE: NEURAL_GROWTH</div>
+        <div class="nbadge">MODE: STRATEGIC_GROWTH</div>
     </nav>
 
     <header class="hero">
-        <span class="t-prompt">> sultan_strategic_pitch.exe --init --high-agency</span>
+        <span class="t-prompt">> run value_proposal.exe --depth-mode</span>
         <h1 class="hh1">
-            THE <span class="pp">ARABIC</span> CUSTOMER.<br>
-            <span class="glitch-wrap cc" data-text="DECODED.">DECODED.</span>
+            <span id="hero-type"></span><span class="cursor" id="hero-cursor"></span><br>
+            <span class="pp">CUSTOMER.</span><br>
+            <span class="cc glitch" data-text="DECODED.">DECODED.</span>
         </h1>
         <p class="hdesc">
-            Lucidya built the most accurate Arabic NLP in the region. <span class="hi">I bridge that intelligence</span> to the humans who need to trust it—closing the gap between <b>AI Data and Executive Trust</b>.
+            Lucidya’s AI processes 15 Arabic dialects at 92% accuracy. <b>I bridge that intelligence</b> to the humans who need to trust it—closing the gap between <b>AI data and Executive Trust</b> in the Saudi market.
         </p>
 
         <div class="hstats rv">
@@ -184,81 +198,133 @@
                 <div class="hstat-bar"><div class="hstat-fill" data-w="99"></div></div>
             </div>
             <div class="hstat">
-                <span class="hstat-label">Market Exp. KSA</span>
+                <span class="hstat-label">Saudi Market Exp</span>
                 <div class="hstat-num"><span>7</span>+Y</div>
                 <div class="hstat-bar"><div class="hstat-fill" data-w="75"></div></div>
             </div>
         </div>
     </header>
 
-    <section id="modules">
-        <div class="s-label">> INITIALIZING_VALUE_MODULES.SH</div>
-        <h2 class="stitle">HOW I DRIVE <span style="color:var(--c)">LUCIDYA'S NRR.</span></h2>
+    <section id="strategy">
+        <div class="s-label">> LOAD_GROWTH_PILLARS.SH</div>
+        <h2 class="stitle">HOW I SCALE <span class="acc">NRR & TRUST.</span></h2>
         
         <div class="vgrid">
             <div class="vcard rv">
                 <span class="vnum">[MODULE_01 // ADOPTION]</span>
-                <h3 class="vcard-title">Time-to-Value Acceleration</h3>
-                <p class="vtext">Enterprise clients don’t buy AI; they buy <b>Business ROI</b>. I focus on compressing the window from onboarding to the client’s first strategic "Aha!" moment with Lucidya’s intelligence.</p>
-                <span class="vtag">Time-to-Value</span><span class="vtag">Expansion</span>
+                <h3 class="vcard-title">Onboarding → Value. Fast.</h3>
+                <p class="vtext">The window between signing and first value realization is where clients become advocates—or ghosts. I compress the window through structured <b>Arabic-first onboarding</b> that focuses on ROI from Day 1.</p>
+                <span class="vtag">Time-to-Value</span><span class="vtag">Adoption</span>
             </div>
             <div class="vcard rv" style="transition-delay: 0.1s;">
                 <span class="vnum">[MODULE_02 // RETENTION]</span>
-                <h3 class="vcard-title">Metric-Driven Account Health</h3>
-                <p class="vtext">Using <b>ChurnZero & HubSpot</b> as my tactical cockpit. I intercept silent detractor signals in utilization data before the client even considers a cancellation request.</p>
-                <span class="vtag">NRR Obsessed</span><span class="vtag">Data-Led</span>
+                <h3 class="vcard-title">NPS → Action. Not a Dashboard.</h3>
+                <p class="vtext">Most CSMs collect NPS. I close the loop. I map every detractor signal to a root cause and assign ownership, ensuring the <b>Voice of the Customer</b> actually changes the product.</p>
+                <span class="vtag">NRR Obsessed</span><span class="vtag">Closed-Loop</span>
             </div>
             <div class="vcard rv">
                 <span class="vnum">[MODULE_03 // TRUST]</span>
-                <h3 class="vcard-title">The "Human Interface" Advantage</h3>
-                <p class="vtext">Navigating high-stakes <b>B2B relationships in Saudi Arabia</b>. Technology starts the conversation, but cultural trust and executive-level alignment close the contract renewal.</p>
+                <h3 class="vcard-title">Government & Enterprise Trust.</h3>
+                <p class="vtext">Lucidya serves high-stakes Saudi banks and government entities. These aren’t transactional relationships; they're political. I navigate <b>Saudi B2B complexities</b> where trust is the only currency.</p>
                 <span class="vtag">Gov Sector</span><span class="vtag">Saudi Native</span>
             </div>
             <div class="vcard rv" style="transition-delay: 0.1s;">
-                <span class="vnum">[MODULE_04 // FEEDBACK]</span>
-                <h3 class="vcard-title">Closed-Loop VoC Architecture</h3>
-                <p class="vtext">Acting as the <b>Voice of the Customer internally</b>. Translating complex field feedback into actionable product requirements that fuel Lucidya’s technical roadmap.</p>
-                <span class="vtag">Product Bridge</span><span class="vtag">NPS Mastery</span>
+                <span class="vnum">[MODULE_04 // PREDICTIVE]</span>
+                <h3 class="vcard-title">Proactive Intelligence.</h3>
+                <p class="vtext">Using <b>ChurnZero + HubSpot</b> as my cockpit to catch silent disengagement signals in utilization data before the client even realizes they are considering leaving.</p>
+                <span class="vtag">Predictive CSM</span><span class="vtag">Tech-Savvy</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="proof">
+        <div class="s-label">> QUERY_PROOF_OF_WORK.DB</div>
+        <h2 class="stitle">REAL NUMBERS. <span class="acc">REAL CONTEXTS.</span></h2>
+        
+        <div class="pgrid rv">
+            <div class="prow">
+                <div class="pnum-col"><div class="pbig">-17%</div><div class="pbar"><div class="pbar-fill" data-w="85"></div></div><div class="plabel">Churn Reduction</div></div>
+                <div class="pctx"><div class="pco">// at:zid · ecommerce_saas</div><div class="pdesc">Rebuilt VoC architecture from scratch—mapped feedback themes, created protocols, and assigned ownership. Resulted in revenue leak protection by keeping merchants active.</div></div>
+                <div class="pctx"><div class="pco">// lucidya_translation</div><div class="pdesc">I catch silent churn signals in utilization data using ChurnZero. <b>→ Protect Lucidya's ARR before renewals.</b></div></div>
+            </div>
+            <div class="prow">
+                <div class="pnum-col"><div class="pbig">57%</div><div class="pbar"><div class="pbar-fill" data-w="57"></div></div><div class="plabel">Lead-to-Loyal</div></div>
+                <div class="pctx"><div class="pco">// at:alaan · fintech_ksa</div><div class="pdesc">Turned cold prospects into active loyal accounts through structured Arabic-first onboarding and proactive engagement within weeks of market launch.</div></div>
+                <div class="pctx"><div class="pco">// lucidya_translation</div><div class="pdesc">Every new Lucidya client trained properly in Month 1 becomes a case study in Month 6. <b>→ Drive adoption from Day 1.</b></div></div>
+            </div>
+            <div class="prow">
+                <div class="pnum-col"><div class="pbig">99.3%</div><div class="pbar"><div class="pbar-fill" data-w="99"></div></div><div class="plabel">SLA Adherence</div></div>
+                <div class="pctx"><div class="pco">// at:zid · peak_season</div><div class="pdesc">Maintained near-perfect service levels during highest-volume periods by identifying operational patterns before they became crises.</div></div>
+                <div class="pctx"><div class="pco">// lucidya_translation</div><div class="pdesc">For gov/enterprise clients, SLA is a bulletproof contract obligation. <b>→ Keep Lucidya’s contracts legally secure.</b></div></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="plan">
+        <div class="s-label">> EXEC_90_DAY_PROTOCOL.SH</div>
+        <h2 class="stitle">FIRST 90 DAYS. <span class="acc">NOT A RAMP.</span></h2>
+        
+        <div class="tgrid rv">
+            <div class="tphase">
+                <h3 class="tph">LEARN</h3><span class="tdays">// DAYS 01–30</span>
+                <ul class="tlist">
+                    <li>Master Lucidya's platform A-Z.</li>
+                    <li>Map client health scores in ChurnZero.</li>
+                    <li>Identify top 3 at-risk accounts immediately.</li>
+                    <li>Shadow 10 client calls—listen before speaking.</li>
+                </ul>
+            </div>
+            <div class="tphase">
+                <h3 class="tph">BUILD</h3><span class="tdays">// DAYS 31–60</span>
+                <ul class="tlist">
+                    <li>Design Arabic-first onboarding playbook.</li>
+                    <li>Launch NPS closed-loop protocol.</li>
+                    <li>Identify first expansion (Upsell) opportunities.</li>
+                    <li>Establish QBR cadence for enterprise accounts.</li>
+                </ul>
+            </div>
+            <div class="tphase">
+                <h3 class="tph">DRIVE</h3><span class="tdays">// DAYS 61–90</span>
+                <ul class="tlist">
+                    <li>Deliver first QBR with clear ROI data for clients.</li>
+                    <li>Close first upsell opportunity.</li>
+                    <li>Target: 0 unplanned churn.</li>
+                    <li>Build internal feedback report for Product team.</li>
+                </ul>
             </div>
         </div>
 
-        <div class="output-box rv">
-            <div id="type-target" class="typed-output"></div><span class="cursor"></span>
+        <div class="outbox rv">
+            <span class="outbox-title">// SYSTEM_OUTPUT: MISSION_STATEMENT</span>
+            <div id="type-target" class="typed-text"></div><span class="cursor"></span>
         </div>
     </section>
 
     <footer>
-        <div class="f-cmd"><span>$</span> sultan --connect --riyadh --now<span class="cursor"></span></div>
+        <div class="f-cmd"><span>$</span> sultan --connect --riyadh --lucidya<span class="cursor"></span></div>
         <div class="f-info">
-            > Location: Riyadh, Saudi Arabia<br>
-            > CCXP® Certified: TRUE<br>
-            > Mobile: <a href="tel:+966599061969">+966 59 906 1969</a><br>
-            > Email: <a href="mailto:SultanFq.career@gmail.com">SultanFq.career@gmail.com</a><br>
-            > Portfolio: <a href="https://sultan-portfolio.github.io" target="_blank">sultan-portfolio.github.io</a><br><br>
-            > [SYSTEM_STATUS: READY_TO_ENGINEER_LUCIDYA_SUCCESS]
+            > Location: Riyadh, Saudi Arabia | Mobile: <a href="tel:+966599061969">+966 59 906 1969</a><br>
+            > Email: <a href="mailto:SultanFq.career@gmail.com">SultanFq.career@gmail.com</a> | Portfolio: <a href="https://sultan-portfolio.github.io">sultan-portfolio.github.io</a><br>
+            > [SYSTEM_STATUS: READY_TO_ENGINEER_SUCCESS]
         </div>
     </footer>
 
     <script>
-        // System Clock
+        // Clock
         function updateClock() {
             const now = new Date();
-            const timeStr = now.toLocaleTimeString('en-GB', { hour12: false });
-            document.getElementById('clock').innerText = 'AST ' + timeStr;
+            document.getElementById('clock').innerText = 'AST ' + now.toLocaleTimeString('en-GB', { hour12: false });
         }
         setInterval(updateClock, 1000); updateClock();
 
-        // Scroll Progress
+        // Scroll Logic
         window.onscroll = () => {
             let winScroll = document.documentElement.scrollTop;
             let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             document.getElementById("prog").style.width = (winScroll / height) * 100 + "%";
-            // Nav background toggle
-            document.getElementById("nav").style.background = winScroll > 50 ? "rgba(3,3,8,0.98)" : "transparent";
-            document.getElementById("nav").style.borderBottom = winScroll > 50 ? "1px solid var(--border)" : "none";
         };
 
-        // Neural Network Canvas
+        // Neural Net Canvas
         const canvas = document.getElementById('net-canvas'), ctx = canvas.getContext('2d');
         let width, height, nodes = [];
         function initNet() {
@@ -280,20 +346,30 @@
         }
         initNet(); drawNet(); window.onresize = initNet;
 
-        // Intersection Observer for Reveal & Bars & Typewriter
-        const logText = "Establishing secure connection to Lucidya HQ... [OK]\nAnalyzing Arabic Customer Profiles... [DONE]\nSultan Alqahtani: High Agency Mode Activated.\nI don't manage accounts. I engineer client loyalty.\nReady to scale NRR and dominate the B2B SaaS space.";
+        // Typing Animations
+        const heroText = "THE ARABIC";
+        let hi = 0;
+        function typeHero() {
+            if(hi < heroText.length) {
+                document.getElementById('hero-type').textContent += heroText[hi];
+                hi++; setTimeout(typeHero, 100);
+            } else {
+                document.getElementById('hero-cursor').style.display = 'none';
+            }
+        }
+        setTimeout(typeHero, 800);
+
+        const logText = "Establishing link to Lucidya HQ... [OK]\nAnalyzing Arabic Customer Profiles... [DONE]\nI don't provide CX support; I engineer client loyalty.\nLucidya becomes an indispensable strategic partner—not a tool they log into once a month.\nHigh Agency Mode: ACTIVATED.";
         let typeStarted = false;
 
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 if(entry.isIntersecting) {
                     entry.target.classList.add('on');
-                    // Fill Bars
-                    entry.target.querySelectorAll('.hstat-fill').forEach(bar => {
+                    entry.target.querySelectorAll('.hstat-fill, .pbar-fill').forEach(bar => {
                         bar.style.width = bar.getAttribute('data-w') + '%';
                     });
-                    // Typewriter
-                    if(entry.target.classList.contains('output-box') && !typeStarted) {
+                    if(entry.target.classList.contains('outbox') && !typeStarted) {
                         typeStarted = true;
                         let ti = 0;
                         function type() {
@@ -307,7 +383,7 @@
                 }
             });
         }, { threshold: 0.15 });
-        document.querySelectorAll('.rv, .output-box').forEach(el => observer.observe(el));
+        document.querySelectorAll('.rv, .outbox').forEach(el => observer.observe(el));
     </script>
 </body>
 </html>
