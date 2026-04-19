@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sultan Alqahtani // Lucidya.Terminal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+    <title>SULTAN // LUCIDYA_OS_v1.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #030308;
+            --bg: #05050a;
             --p: #6C5CE7;      /* Lucidya Purple */
             --c: #00CDB8;      /* Lucidya Cyan */
             --white: #F0F4FF;
             --dim: rgba(240, 244, 255, 0.4);
             --border: rgba(108, 92, 231, 0.2);
+            --glow: 0 0 15px rgba(0, 205, 184, 0.3);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
@@ -21,81 +22,109 @@
             color: var(--white);
             font-family: 'Montserrat', sans-serif;
             overflow-x: hidden;
-            background-image: 
-                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
-                linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-            background-size: 100% 4px, 3px 100%;
+            background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+            background-size: 100% 3px, 3px 100%;
         }
 
-        #net-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.25; pointer-events: none; }
-        #prog { position: fixed; top: 0; left: 0; height: 2px; background: var(--c); z-index: 9999; width: 0%; box-shadow: 0 0 10px var(--c); }
+        #net-canvas { position: fixed; inset: 0; z-index: 0; opacity: 0.3; pointer-events: none; }
+        #prog { position: fixed; top: 0; left: 0; height: 3px; background: var(--c); z-index: 9999; width: 0%; box-shadow: var(--glow); }
 
+        /* STATUS BAR - THE OS FEEL */
+        .status-bar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(5, 5, 10, 0.95); border-bottom: 1px solid var(--border);
+            padding: 8px 6%; display: flex; justify-content: space-between; align-items: center;
+            font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--dim);
+        }
+        .status-online { color: #2ecc71; display: flex; align-items: center; gap: 8px; }
+        .dot { width: 6px; height: 6px; background: #2ecc71; border-radius: 50%; animation: blink 1s infinite; }
+
+        /* NAV */
         nav {
-            position: fixed; top: 0; width: 100%; z-index: 100; padding: 20px 6%;
+            position: fixed; top: 32px; width: 100%; z-index: 100; padding: 20px 6%;
             display: flex; justify-content: space-between; align-items: center;
-            background: rgba(3, 3, 8, 0.9); border-bottom: 1px solid var(--border); backdrop-filter: blur(10px);
+            background: linear-gradient(to bottom, var(--bg), transparent); backdrop-filter: blur(8px);
         }
-        .nav-logo { font-family: 'Space Mono', monospace; font-size: 0.9rem; letter-spacing: 2px; }
-        .nav-badge { border: 1px solid var(--p); color: var(--p); padding: 5px 12px; font-size: 0.55rem; font-family: 'Space Mono'; }
+        .nav-logo { font-family: 'Space Mono', monospace; font-size: 1rem; font-weight: 700; color: var(--white); text-decoration: none; }
+        .nav-logo span { color: var(--c); }
+        .nav-badge { border: 1px solid var(--p); color: var(--p); padding: 5px 12px; font-size: 0.55rem; font-family: 'Space Mono'; text-transform: uppercase; }
 
         /* HERO */
         .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 8%; position: relative; z-index: 2; }
-        .terminal-label { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--c); margin-bottom: 20px; display: block; }
+        .prompt { font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--c); margin-bottom: 25px; display: block; }
         
-        .htitle { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 10vw, 8rem); line-height: 0.9; margin-bottom: 30px; }
-        .typing-text { border-right: 4px solid var(--c); white-space: nowrap; overflow: hidden; display: inline-block; }
-        .glitch-num { color: var(--c); position: relative; display: inline-block; transition: 0.3s; }
-        .glitch-num:hover { text-shadow: 2px 0 var(--p), -2px 0 var(--c); animation: glitch-anim 0.2s infinite; }
+        .hh1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 12vw, 9rem); line-height: 0.85; margin-bottom: 30px; letter-spacing: -2px; }
+        .hh1 .pp { color: var(--p); text-shadow: 0 0 40px rgba(108, 92, 231, 0.4); }
+        .hh1 .cc { color: var(--c); text-shadow: var(--glow); }
 
-        @keyframes glitch-anim {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
-        }
+        .glitch-wrap { display: inline-block; position: relative; }
+        .glitch-wrap:hover::before { content: attr(data-text); position: absolute; left: 2px; text-shadow: -2px 0 var(--p); clip: rect(44px, 450px, 56px, 0); animation: glitch-1 0.5s infinite linear alternate-reverse; }
+        .glitch-wrap:hover::after { content: attr(data-text); position: absolute; left: -2px; text-shadow: -2px 0 var(--c); clip: rect(44px, 450px, 56px, 0); animation: glitch-2 0.5s infinite linear alternate-reverse; }
 
-        .hdesc { font-size: 1.2rem; font-weight: 300; color: var(--dim); max-width: 650px; margin-bottom: 40px; }
+        @keyframes glitch-1 { 0% { clip: rect(10px, 9999px, 20px, 0); } 100% { clip: rect(80px, 9999px, 90px, 0); } }
+        @keyframes glitch-2 { 0% { clip: rect(50px, 9999px, 60px, 0); } 100% { clip: rect(20px, 9999px, 30px, 0); } }
 
-        /* CARDS WITH CIRCUIT BORDER */
-        section { padding: 80px 8%; z-index: 2; position: relative; }
-        .vgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .hdesc { font-size: 1.3rem; font-weight: 300; color: var(--dim); max-width: 750px; line-height: 1.6; }
+        .hdesc b { color: var(--white); font-weight: 600; }
+
+        /* DATA TILES - THE DASHBOARD */
+        .hstats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: var(--border); margin-top: 60px; border: 1px solid var(--border); }
+        @media(max-width: 800px) { .hstats { grid-template-columns: 1fr 1fr; } }
+        
+        .hstat { background: var(--bg); padding: 30px 25px; position: relative; }
+        .hstat-label { font-family: 'Space Mono', monospace; font-size: 0.5rem; color: var(--dim); text-transform: uppercase; margin-bottom: 10px; display: block; }
+        .hstat-num { font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; line-height: 1; color: var(--white); }
+        .hstat-num span { color: var(--c); }
+        .hstat-bar { height: 2px; background: rgba(255,255,255,0.05); margin-top: 15px; position: relative; overflow: hidden; }
+        .hstat-fill { position: absolute; top: 0; left: 0; height: 100%; background: var(--c); width: 0%; transition: 2s cubic-bezier(0.19, 1, 0.22, 1); box-shadow: var(--glow); }
+
+        /* MODULE CARDS */
+        section { padding: 120px 8%; z-index: 2; position: relative; }
+        .s-header { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--c); margin-bottom: 50px; display: flex; align-items: center; gap: 20px; }
+        .s-header::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
+
+        .stitle { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem, 6vw, 5rem); margin-bottom: 50px; }
+
+        .vgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
         @media(max-width: 900px) { .vgrid { grid-template-columns: 1fr; } }
 
         .vcard { 
-            background: rgba(10, 10, 20, 0.5); padding: 40px; border: 1px solid var(--border); 
-            position: relative; transition: 0.3s; overflow: hidden;
+            background: rgba(10, 10, 20, 0.6); padding: 50px; border: 1px solid var(--border); 
+            position: relative; transition: 0.4s ease; backdrop-filter: blur(10px);
         }
-        .vcard:hover { border-color: var(--c); }
+        .vcard:hover { border-color: var(--c); transform: translateY(-10px); background: rgba(0, 205, 184, 0.02); }
+        
+        /* CIRCUIT BOARD BORDER EFFECT */
         .vcard::before {
-            content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
-            background: var(--c); z-index: -1; transform: scale(0); transition: 0.4s;
-            clip-path: polygon(0 0, 20% 0, 25% 5%, 75% 5%, 80% 0, 100% 0, 100% 100%, 0 100%);
+            content: ''; position: absolute; inset: 0; border: 1px solid transparent; transition: 0.4s;
         }
-        .vcard:hover::before { transform: scale(1); opacity: 0.1; }
+        .vcard:hover::before {
+            border-image: linear-gradient(135deg, var(--c) 20%, transparent 20%, transparent 80%, var(--p) 80%) 1;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 20%, 5% 15%, 5% 0);
+        }
 
-        .vtitle { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; margin-bottom: 15px; color: var(--white); }
+        .vnum { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--p); margin-bottom: 20px; display: block; }
+        .vcard-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 20px; letter-spacing: -0.5px; }
+        .vtext { font-size: 0.95rem; color: var(--dim); line-height: 1.8; }
+        .vtext b { color: var(--white); }
 
-        /* PROGRESS BARS */
-        .prow { margin-bottom: 40px; }
-        .p-meta { display: flex; justify-content: space-between; font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--c); margin-bottom: 10px; }
-        .bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.05); }
-        .bar-fill { height: 100%; background: var(--c); width: 0%; transition: 2s cubic-bezier(0.19, 1, 0.22, 1); box-shadow: 0 0 15px var(--c); }
+        /* TYPEWRITER OUTPUT */
+        .output-box { background: #000; border: 1px solid var(--border); padding: 40px; margin-top: 60px; font-family: 'Space Mono', monospace; position: relative; }
+        .output-box::before { content: 'SYSTEM_LOG'; position: absolute; top: -10px; left: 20px; background: var(--bg); padding: 0 10px; font-size: 0.5rem; color: var(--p); }
+        .typed-output { font-size: 1.1rem; color: var(--white); min-height: 3em; line-height: 1.6; }
+        .cursor { display: inline-block; width: 8px; height: 18px; background: var(--c); animation: blink 1s infinite; vertical-align: middle; margin-left: 5px; }
 
-        /* TYPEWRITER QUOTE */
-        .qbox { background: rgba(108, 92, 231, 0.03); border: 1px solid var(--border); padding: 60px; text-align: center; }
-        .typewriter-q { font-size: 1.5rem; color: var(--white); min-height: 3em; font-weight: 300; }
+        /* FOOTER */
+        footer { padding: 100px 8% 50px; background: #000; border-top: 1px solid var(--border); z-index: 2; position: relative; }
+        .f-cmd { font-family: 'Space Mono', monospace; font-size: 1.2rem; color: var(--c); margin-bottom: 30px; }
+        .f-cmd span { color: var(--p); }
+        .f-info { font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--dim); line-height: 2; }
+        .f-info a { color: var(--white); text-decoration: none; border-bottom: 1px solid var(--c); }
 
-        /* TERMINAL FOOTER */
-        footer { padding: 60px 8%; background: #000; font-family: 'Space Mono', monospace; border-top: 1px solid var(--border); }
-        .cmd { color: var(--c); margin-bottom: 10px; font-size: 1.1rem; }
-        .cmd::before { content: '$ '; color: var(--p); }
-        .response { color: var(--dim); font-size: 0.8rem; line-height: 1.8; }
-        .blink { display: inline-block; width: 10px; height: 18px; background: var(--c); animation: blink 1s infinite; vertical-align: middle; }
-
-        .rv { opacity: 0; transform: translateY(20px); transition: 0.8s; }
+        .rv { opacity: 0; transform: translateY(30px); transition: 1s cubic-bezier(0.19, 1, 0.22, 1); }
         .rv.on { opacity: 1; transform: translateY(0); }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
     </style>
 </head>
 <body>
@@ -103,150 +132,158 @@
     <canvas id="net-canvas"></canvas>
     <div id="prog"></div>
 
+    <div class="status-bar">
+        <div class="status-online"><div class="dot"></div> SYSTEM_READY // SULTAN_LUCIDYA_v1.0</div>
+        <div id="sys-clock">AST 00:00:00</div>
+    </div>
+
     <nav>
-        <div class="nav-logo">>_LUCIDYA//<span>STRATEGY</span></div>
-        <div class="nav-badge">STATUS: OPTIMIZING_NRR</div>
+        <a href="#" class="nav-logo">LUCIDYA<span>.</span>CSM</a>
+        <div class="nav-badge">High-Growth Strategy</div>
     </nav>
 
     <header class="hero">
-        <span class="terminal-label">> INITIALIZING_VALUE_PROPOSAL.EXE...</span>
-        <h1 class="htitle">
-            <span id="type-target" class="typing-text"></span><br>
-            <span class="glitch-num" data-text="DECODED.">DECODED.</span>
+        <span class="prompt">> sultan_value_proposal.exe --execute</span>
+        <h1 class="hh1">
+            THE <span class="pp">ARABIC</span> CUSTOMER.<br>
+            <span class="glitch-wrap cc" data-text="DECODED.">DECODED.</span>
         </h1>
         <p class="hdesc">
-            7 years of engineering high-stakes customer operations. I bridge the gap between <b>Lucidya’s raw AI</b> and <b>Executive Trust</b>.
+            Lucidya built the most powerful Arabic NLP in the region. <b>I bridge that intelligence</b> to the humans who need to trust it—closing the gap between <b>AI data and Executive Trust</b>.
         </p>
+
+        <div class="hstats rv">
+            <div class="hstat">
+                <span class="hstat-label">Churn Reduction</span>
+                <div class="hstat-num">-<span>17</span>%</div>
+                <div class="hstat-bar"><div class="hstat-fill" data-w="85"></div></div>
+            </div>
+            <div class="hstat">
+                <span class="hstat-label">Lead-to-Loyal</span>
+                <div class="hstat-num"><span>57</span>%</div>
+                <div class="hstat-bar"><div class="hstat-fill" data-w="57"></div></div>
+            </div>
+            <div class="hstat">
+                <span class="hstat-label">SLA Adherence</span>
+                <div class="hstat-num"><span>99</span>.3%</div>
+                <div class="hstat-bar"><div class="hstat-fill" data-w="99"></div></div>
+            </div>
+            <div class="hstat">
+                <span class="hstat-label">Exp. in KSA</span>
+                <div class="hstat-num"><span>7</span>+Y</div>
+                <div class="hstat-bar"><div class="hstat-fill" data-w="70"></div></div>
+            </div>
+        </div>
     </header>
 
-    <section>
-        <span class="terminal-label">> RUN_CORE_VALUES.SH</span>
-        <div class="vgrid rv">
-            <div class="vcard">
-                <span style="font-family:'Space Mono'; color:var(--p); font-size:0.7rem;">[MODULE_01]</span>
-                <h3 class="vtitle">Time-to-Value Acceleration</h3>
-                <p class="vtext">I compress the window from "First Access" to "Strategic Insight" for Enterprise and Gov clients.</p>
-            </div>
-            <div class="vcard">
-                <span style="font-family:'Space Mono'; color:var(--p); font-size:0.7rem;">[MODULE_02]</span>
-                <h3 class="vtitle">Predictive Churn Defense</h3>
-                <p class="vtext">Leveraging <b>ChurnZero & HubSpot</b> to intercept at-risk accounts before they hit the renewal cycle.</p>
-            </div>
-        </div>
-    </section>
-
-    <section>
-        <span class="terminal-label">> FETCH_IMPACT_METRICS...</span>
+    <section id="modules">
+        <div class="s-header">INITIALIZING_VALUE_MODULES.SH</div>
+        <h2 class="stitle">HOW I DRIVE <span style="color:var(--c)">LUCIDYA'S NRR.</span></h2>
         
-        <div class="prow rv">
-            <div class="p-meta"><span>CHURN_REDUCTION</span> <span>-17%</span></div>
-            <div class="bar-bg"><div class="bar-fill" data-target="17%"></div></div>
-        </div>
-        
-        <div class="prow rv">
-            <div class="p-meta"><span>LEAD_TO_LOYAL_CONVERSION</span> <span>57%</span></div>
-            <div class="bar-bg"><div class="bar-fill" data-target="57%"></div></div>
+        <div class="vgrid">
+            <div class="vcard rv">
+                <span class="vnum">MODULE_01 // ADOPTION</span>
+                <h3 class="vcard-title">Time-to-Value Acceleration</h3>
+                <p class="vtext">Clients don’t buy AI; they buy <b>Business ROI</b>. I focus on accelerating the window between implementation and actual strategic value for Enterprise clients.</p>
+            </div>
+            <div class="vcard rv" style="transition-delay: 0.1s;">
+                <span class="vnum">MODULE_02 // RETENTION</span>
+                <h3 class="vcard-title">Metric-Driven Churn Defense</h3>
+                <p class="vtext">Using <b>ChurnZero & HubSpot</b> as my cockpit to intercept silent detractor signals in utilization data before they reach the renewal cycle.</p>
+            </div>
+            <div class="vcard rv">
+                <span class="vnum">MODULE_03 // TRUST</span>
+                <h3 class="vcard-title">The "Translator" Advantage</h3>
+                <p class="vtext">Navigating high-stakes <b>B2B relationships in Saudi Arabia</b>. I know what turns a government official or a C-suite executive from a user into an advocate.</p>
+            </div>
+            <div class="vcard rv" style="transition-delay: 0.1s;">
+                <span class="vnum">MODULE_04 // GROWTH</span>
+                <h3 class="vcard-title">Closed-Loop VoC Protocol</h3>
+                <p class="vtext">Acting as the <b>Voice of the Customer internally</b>—translating field feedback into product requirements that fuel Lucidya’s roadmap.</p>
+            </div>
         </div>
 
-        <div class="prow rv">
-            <div class="p-meta"><span>SLA_PRECISION</span> <span>99.3%</span></div>
-            <div class="bar-bg"><div class="bar-fill" data-target="99%"></div></div>
-        </div>
-    </section>
-
-    <section>
-        <div class="qbox rv">
-            <div id="quote-target" class="typewriter-q"></div>
+        <div class="output-box rv">
+            <div id="type-target" class="typed-output"></div><span class="cursor"></span>
         </div>
     </section>
 
     <footer>
-        <div class="cmd">sultan --connect --riyadh --lucidya<span class="blink"></span></div>
-        <div class="response">
-            > Establishing secure link... OK<br>
-            > Location: Riyadh, KSA<br>
-            > Phone: +966 59 906 1969<br>
-            > Email: SultanFq.career@gmail.com<br>
-            > [SYSTEM_READY]
+        <div class="f-cmd"><span>$</span> sultan --connect --riyadh --now<span class="cursor"></span></div>
+        <div class="f-info">
+            > Location: Riyadh, Saudi Arabia<br>
+            > Mobile: <a href="tel:+966599061969">+966 59 906 1969</a><br>
+            > Email: <a href="mailto:SultanFq.career@gmail.com">SultanFq.career@gmail.com</a><br>
+            > [SYSTEM_STATUS: READY_TO_ENGINEER_SUCCESS]
         </div>
     </footer>
 
     <script>
-        // Progress bar
+        // Clock Function
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-GB', { hour12: false });
+            document.getElementById('sys-clock').innerText = 'AST ' + timeStr;
+        }
+        setInterval(updateClock, 1000); updateClock();
+
+        // Progress Scroll
         window.onscroll = () => {
             let winScroll = document.documentElement.scrollTop;
             let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             document.getElementById("prog").style.width = (winScroll / height) * 100 + "%";
         };
 
-        // Typing Effect Hero
-        const typeText = "THE ARABIC CUSTOMER.";
-        let i = 0;
-        function typeHero() {
-            if (i < typeText.length) {
-                document.getElementById("type-target").innerHTML += typeText.charAt(i);
-                i++;
-                setTimeout(typeHero, 100);
-            } else {
-                document.getElementById("type-target").style.borderRight = "none";
-            }
-        }
-        window.onload = typeHero;
-
-        // Neural Network
-        const canvas = document.getElementById('net-canvas');
-        const ctx = canvas.getContext('2d');
+        // Neural Network Logic
+        const canvas = document.getElementById('net-canvas'), ctx = canvas.getContext('2d');
         let width, height, nodes = [];
-        function init() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-            nodes = [];
-            for(let i=0; i<60; i++) nodes.push({x:Math.random()*width, y:Math.random()*height, vx:(Math.random()-0.5)*0.5, vy:(Math.random()-0.5)*0.5});
+        function initNet() {
+            width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight;
+            nodes = []; for(let i=0; i<75; i++) nodes.push({x: Math.random()*width, y: Math.random()*height, vx: (Math.random()-0.5)*0.4, vy: (Math.random()-0.5)*0.4});
         }
-        function draw() {
-            ctx.clearRect(0,0,width,height);
-            ctx.fillStyle = '#00CDB8'; ctx.strokeStyle = 'rgba(108, 92, 231, 0.1)';
+        function drawNet() {
+            ctx.clearRect(0,0,width,height); ctx.fillStyle = '#00CDB8'; ctx.strokeStyle = 'rgba(108, 92, 231, 0.1)';
             nodes.forEach((n, i) => {
                 n.x += n.vx; n.y += n.vy;
                 if(n.x<0 || n.x>width) n.vx *= -1; if(n.y<0 || n.y>height) n.vy *= -1;
-                ctx.beginPath(); ctx.arc(n.x, n.y, 1.5, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(n.x, n.y, 1.2, 0, Math.PI*2); ctx.fill();
                 for(let j=i+1; j<nodes.length; j++) {
-                    let n2 = nodes[j];
-                    let d = Math.hypot(n.x-n2.x, n.y-n2.y);
-                    if(d<150) { ctx.beginPath(); ctx.moveTo(n.x, n.y); ctx.lineTo(n2.x, n2.y); ctx.stroke(); }
+                    let d = Math.hypot(n.x-nodes[j].x, n.y-nodes[j].y);
+                    if(d<150) { ctx.beginPath(); ctx.moveTo(n.x, n.y); ctx.lineTo(nodes[j].x, nodes[j].y); ctx.stroke(); }
                 }
             });
-            requestAnimationFrame(draw);
+            requestAnimationFrame(drawNet);
         }
-        init(); draw();
+        initNet(); drawNet(); window.onresize = initNet;
 
-        // Reveal & Progress Bars & Quote Typewriter
-        const quoteText = "I don’t provide support; I Engineer Loyalty. I ensure Lucidya is an Indispensable Strategic Partner.";
-        let qStarted = false;
+        // Intersection Observer for Reveal & Bars & Typewriter
+        const logText = "Establishing secure connection to Lucidya... [OK]\nAnalyzing Arabic Customer Profiles... [OK]\nSultan Alqahtani: High Agency Mode Activated.\nReady to scale NRR and dominate the B2B SaaS space.";
+        let typeStarted = false;
 
-        const obs = new IntersectionObserver(entries => {
+        const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 if(entry.isIntersecting) {
                     entry.target.classList.add('on');
                     // Fill Progress Bars
-                    const fill = entry.target.querySelector('.bar-fill');
-                    if(fill) fill.style.width = fill.getAttribute('data-target');
-                    // Start Quote Typewriter
-                    if(entry.target.classList.contains('qbox') && !qStarted) {
-                        qStarted = true;
-                        let qi = 0;
-                        function typeQuote() {
-                            if(qi < quoteText.length) {
-                                document.getElementById("quote-target").innerHTML += quoteText.charAt(qi);
-                                qi++; setTimeout(typeQuote, 30);
+                    entry.target.querySelectorAll('.hstat-fill').forEach(bar => {
+                        bar.style.width = bar.getAttribute('data-w') + '%';
+                    });
+                    // Start Typewriter
+                    if(entry.target.classList.contains('output-box') && !typeStarted) {
+                        typeStarted = true;
+                        let ti = 0;
+                        function type() {
+                            if(ti < logText.length) {
+                                document.getElementById("type-target").innerHTML += logText.charAt(ti);
+                                ti++; setTimeout(type, 35);
                             }
                         }
-                        typeQuote();
+                        type();
                     }
                 }
             });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.rv, .qbox').forEach(r => obs.observe(r));
+        }, { threshold: 0.15 });
+        document.querySelectorAll('.rv, .output-box').forEach(el => observer.observe(el));
     </script>
 </body>
 </html>
