@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sultan Alqahtani | Lucidya Strategy</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;600;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <title>Sultan Alqahtani | Lucidya Value Proposal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #020205;
-            --card-bg: rgba(10, 10, 25, 0.7);
-            --neon-purple: #A855F7;
-            --neon-cyan: #06B6D4;
+            --card-bg: rgba(13, 21, 37, 0.7);
+            --p: #6C5CE7;      /* Lucidya Purple */
+            --c: #00CDB8;      /* Lucidya Cyan */
             --white: #FFFFFF;
             --text-dim: #94a3b8;
-            --border: rgba(6, 182, 212, 0.2);
+            --border: rgba(108, 92, 231, 0.2);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -26,75 +26,81 @@
         }
 
         /* NEURAL NETWORK BACKGROUND */
-        #network-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.4; }
+        #net-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.3; }
         
         /* NOISE OVERLAY */
         body::after {
             content: ''; position: fixed; inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
             pointer-events: none; z-index: 1;
         }
 
-        #prog { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--neon-purple), var(--neon-cyan)); z-index: 9999; width: 0%; box-shadow: 0 0 15px var(--neon-cyan); }
+        #prog { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--p), var(--c)); z-index: 9999; width: 0%; box-shadow: 0 0 15px var(--c); }
 
         nav {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 25px 6vw; display: flex; justify-content: space-between; align-items: center;
-            background: linear-gradient(to bottom, rgba(2, 2, 5, 0.9), transparent); backdrop-filter: blur(10px);
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 25px 7%; display: flex; justify-content: space-between; align-items: center;
+            background: linear-gradient(to bottom, rgba(2, 2, 5, 0.9), transparent); backdrop-filter: blur(12px);
         }
-        .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 0.1em; color: var(--white); text-decoration: none; }
-        .nav-logo span { color: var(--neon-cyan); }
-        .nav-badge { border: 1px solid var(--neon-purple); color: var(--neon-purple); padding: 5px 15px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; }
+        .nav-logo { font-family: 'Space Mono', monospace; font-size: 1rem; letter-spacing: 0.1em; color: var(--white); text-decoration: none; }
+        .nav-logo span { color: var(--c); }
+        .nav-badge { border: 1px solid var(--p); color: var(--p); padding: 5px 15px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; }
 
         /* HERO */
-        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 8vw; position: relative; z-index: 2; }
-        .hero-kicker { font-size: 0.7rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--neon-cyan); margin-bottom: 20px; display: flex; align-items: center; gap: 15px; }
-        .hero-kicker::after { content: ''; width: 50px; height: 1px; background: var(--neon-cyan); }
+        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 8%; position: relative; z-index: 2; }
+        .hkick { font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--c); margin-bottom: 20px; display: flex; align-items: center; gap: 15px; }
+        .hkick::after { content: ''; width: 40px; height: 1px; background: var(--c); }
         
-        .hero-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 10vw, 9rem); line-height: 0.85; margin-bottom: 20px; }
-        .hero-title span { color: transparent; -webkit-text-stroke: 1px var(--neon-purple); text-shadow: 0 0 30px rgba(168, 85, 247, 0.3); }
+        .htitle { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 10vw, 8.5rem); line-height: 0.85; margin-bottom: 20px; }
+        .htitle span { color: var(--p); text-shadow: 0 0 30px rgba(108, 92, 231, 0.4); }
+        .htitle .cyan-txt { color: var(--c); text-shadow: 0 0 30px rgba(0, 205, 184, 0.4); }
         
-        .hero-desc { font-size: clamp(1rem, 2vw, 1.4rem); font-weight: 300; color: var(--text-dim); max-width: 700px; margin-bottom: 40px; }
-        .hero-desc strong { color: var(--white); font-weight: 600; }
+        .hdesc { font-size: clamp(1rem, 2vw, 1.4rem); font-weight: 300; color: var(--text-dim); max-width: 700px; margin-bottom: 40px; }
+        .hdesc strong { color: var(--white); font-weight: 600; }
 
-        .hero-stats { display: flex; gap: 50px; flex-wrap: wrap; }
+        .hstats { display: flex; gap: 50px; flex-wrap: wrap; }
         .hstat-num { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; color: var(--white); line-height: 1; }
-        .hstat-num span { color: var(--neon-cyan); }
+        .hstat-num .cc { color: var(--c); }
         .hstat-label { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); margin-top: 5px; }
 
         /* SECTIONS */
-        section { padding: 120px 8vw; position: relative; z-index: 2; }
-        .s-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.4em; text-transform: uppercase; color: var(--neon-purple); margin-bottom: 50px; display: flex; align-items: center; gap: 20px; }
-        .s-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(168, 85, 247, 0.4), transparent); }
+        section { padding: 100px 8%; position: relative; z-index: 2; max-width: 1400px; margin: 0 auto; }
+        .slabel { font-family: 'Space Mono', monospace; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.4em; text-transform: uppercase; color: var(--c); margin-bottom: 50px; display: flex; align-items: center; gap: 20px; }
+        .slabel::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(0, 205, 184, 0.3), transparent); }
 
-        .stitle { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem, 5vw, 4.5rem); margin-bottom: 40px; }
+        .stitle { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem, 5vw, 4.5rem); margin-bottom: 40px; letter-spacing: 0.02em; }
+        .stitle span { color: var(--p); }
 
-        /* GRID SYSTEM */
-        .v-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-        @media(max-width: 900px) { .v-grid { grid-template-columns: 1fr; } }
+        /* GRID CARDS */
+        .vgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        @media(max-width: 900px) { .vgrid { grid-template-columns: 1fr; } }
 
-        .v-card { background: var(--card-bg); border: 1px solid var(--border); padding: 50px; position: relative; transition: all 0.4s ease; overflow: hidden; }
-        .v-card:hover { border-color: var(--neon-cyan); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(6, 182, 212, 0.1); }
-        .v-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--neon-cyan); opacity: 0; transition: 0.3s; }
-        .v-card:hover::before { opacity: 1; }
+        .vcard { background: var(--card-bg); border: 1px solid var(--border); padding: 50px; position: relative; transition: all 0.4s ease; backdrop-filter: blur(10px); }
+        .vcard:hover { border-color: var(--c); transform: translateY(-5px); background: rgba(0, 205, 184, 0.03); }
+        .vcard::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--p); opacity: 0; transition: 0.3s; }
+        .vcard:hover::before { opacity: 1; }
 
-        .v-num { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--neon-purple); margin-bottom: 20px; display: block; opacity: 0.6; }
-        .v-title { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; margin-bottom: 20px; letter-spacing: 0.05em; }
-        .v-text { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 25px; line-height: 1.8; font-family: 'Tajawal', sans-serif; }
-        .v-text strong { color: var(--white); }
+        .vnum { font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--p); margin-bottom: 20px; display: block; opacity: 0.6; }
+        .vcard-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 15px; }
+        .vtext { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 25px; line-height: 1.8; }
+        .vtext strong { color: var(--white); }
 
-        .v-list { list-style: none; }
-        .v-list li { font-size: 0.85rem; color: var(--white); margin-bottom: 12px; display: flex; gap: 12px; font-family: 'Tajawal', sans-serif; }
-        .v-list li::before { content: '◈'; color: var(--neon-cyan); }
+        .vtag { display: inline-block; background: rgba(108, 92, 231, 0.1); border: 1px solid rgba(108, 92, 231, 0.2); color: var(--white); font-size: 0.55rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 12px; border-radius: 2px; margin-right: 6px; }
 
-        /* THE "WHY SULTAN" BOX */
-        .impact-box { background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(6, 182, 212, 0.1)); border: 1px solid var(--neon-purple); padding: 60px; margin-top: 60px; text-align: center; }
-        .impact-text { font-size: 1.4rem; font-weight: 300; color: var(--white); max-width: 900px; margin: 0 auto; line-height: 1.8; font-family: 'Tajawal', sans-serif; }
-        .impact-text span { color: var(--neon-cyan); font-weight: 700; }
+        /* THE 90 DAY PLAN GRID */
+        .tgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 40px; background: var(--border); border: 1px solid var(--border); }
+        @media(max-width: 800px) { .tgrid { grid-template-columns: 1fr; } }
+        .tphase { background: var(--bg); padding: 40px; }
+        .tph { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; margin-bottom: 5px; }
+        .tdays { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--c); letter-spacing: 0.2em; margin-bottom: 20px; display: block; }
+        .tlist { list-style: none; }
+        .tlist li { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 12px; display: flex; gap: 10px; }
+        .tlist li::before { content: '→'; color: var(--c); }
 
-        footer { padding: 80px 8vw; border-top: 1px solid var(--border); text-align: center; background: #000; z-index: 2; position: relative; }
-        .f-name { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; margin-bottom: 10px; }
-        .f-contact { font-size: 0.8rem; letter-spacing: 0.1em; color: var(--text-dim); }
-        .f-contact a { color: var(--white); text-decoration: none; border-bottom: 1px solid var(--neon-cyan); padding-bottom: 2px; }
+        /* FOOTER */
+        footer { padding: 80px 8%; border-top: 1px solid var(--border); text-align: center; background: #000; position: relative; z-index: 2; }
+        .f-name { font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; margin-bottom: 10px; }
+        .f-contact { font-size: 0.85rem; color: var(--text-dim); letter-spacing: 0.05em; }
+        .f-contact a { color: var(--white); text-decoration: none; border-bottom: 1px solid var(--c); }
 
         .rv { opacity: 0; transform: translateY(30px); transition: 0.8s ease; }
         .rv.on { opacity: 1; transform: translateY(0); }
@@ -102,94 +108,110 @@
 </head>
 <body>
 
-    <canvas id="network-canvas"></canvas>
+    <canvas id="net-canvas"></canvas>
     <div id="prog"></div>
 
     <nav>
-        <a href="#" class="nav-logo">LUCIDYA<span>.</span>AI</a>
-        <div class="nav-badge">CSM STRATEGY 2026</div>
+        <a href="#" class="nav-logo">LUCIDYA<span>.STRATEGY</span></a>
+        <div class="nav-badge">SULTAN ALQAHTANI · SR. CSM</div>
     </nav>
 
     <header class="hero">
-        <div class="hero-kicker">Value Engineering Pitch</div>
-        <h1 class="hero-title">SULTAN ALQAHTANI:<br>THE <span>RETENTION</span> ENGINE</h1>
-        <p class="hero-desc">
-            7 years of engineering customer success across <strong>Amazon, Alaan, and Zid.</strong> I don't just manage relationships; I engineer <strong>measurable growth</strong> and <strong>Product-Led CX</strong> in the B2B SaaS ecosystem.
+        <div class="hkick">Value Engineering Proposal</div>
+        <h1 class="htitle">The <span>Arabic</span> Customer<br><span class="cyan-txt">Decoded.</span></h1>
+        <p class="hdesc">
+            7 years of engineering customer success across <strong>Amazon, Alaan, and Zid.</strong> I bridge the gap between Lucidya's raw AI intelligence and the <strong>trust</strong> required by Enterprise & Government leaders.
         </p>
-        <div class="hero-stats">
+        <div class="hstats">
             <div class="hstat">
-                <div class="hstat-num"><span class="counter" data-target="7">0</span><span>+</span></div>
-                <div class="hstat-label">Years of SaaS Exp</div>
+                <div class="hstat-num">−<span class="counter" data-target="17">0</span><span class="cc">%</span></div>
+                <div class="hstat-label">Churn Reduction Achievement</div>
             </div>
             <div class="hstat">
-                <div class="hstat-num"><span>-</span><span class="counter" data-target="17">0</span><span>%</span></div>
-                <div class="hstat-label">Churn Reduction</div>
+                <div class="hstat-num"><span class="counter" data-target="57">0</span><span class="cc">%</span></div>
+                <div class="hstat-label">Lead-to-Loyal Rate</div>
             </div>
             <div class="hstat">
-                <div class="hstat-num"><span class="counter" data-target="3">0</span></div>
-                <div class="hstat-label">Market Leaders Served</div>
+                <div class="hstat-num"><span class="counter" data-target="99">0</span><span class="cc">.3%</span></div>
+                <div class="hstat-label">SLA Adherence in Peak Seasons</div>
             </div>
         </div>
     </header>
 
-    <section id="value">
-        <div class="s-label">How I add Value to Lucidya</div>
-        <h2 class="stitle">STRATEGIC CUSTOMER SUCCESS</h2>
+    <section id="strategy">
+        <div class="slabel rv">The Approach</div>
+        <h2 class="stitle">How I Scale Value & <span>NRR</span></h2>
         
-        <div class="v-grid">
-            <div class="v-card rv">
-                <span class="v-num">01</span>
-                <h3 class="v-title">VALUE REALIZATION & ADOPTION</h3>
-                <p class="v-text">
-                    العميل لا يشتري "أداة ذكاء اصطناعي"، بل يشتري <strong>نتائج أعمال</strong>. في لوسيديا، سأركز على تقليص الفجوة بين "التدشين" و"تحقيق القيمة" (Time to Value).
+        <div class="vgrid">
+            <div class="vcard rv">
+                <span class="vnum">// 01</span>
+                <h3 class="vcard-title">Value Realization & Time-to-Value</h3>
+                <p class="vtext">
+                    Enterprise clients don't buy "Arabic NLP"; they buy <strong>Business Clarity</strong>. My priority is compressing the window between onboarding and the client's first "Aha!" moment with Lucidya's data.
                 </p>
-                <ul class="v-list">
-                    <li><strong>Strategic Education:</strong> تحويل العميل من مستخدم للأداة إلى خبير في تحليل البيانات (Intelligence Native).</li>
-                    <li><strong>Expansion Mindset:</strong> تحديد فرص الـ Cross-sell والـ Up-sell بناءً على بيانات الاستخدام الحقيقية.</li>
-                </ul>
+                <span class="vtag">Enterprise CX</span><span class="vtag">Adoption Strategy</span>
             </div>
 
-            <div class="v-card rv" style="transition-delay: 0.1s;">
-                <span class="v-num">02</span>
-                <h3 class="v-title">METRICS OBSESSION (NRR & NPS)</h3>
-                <p class="v-text">
-                    أؤمن بأن لغة الـ B2B SaaS هي الأرقام. سأقوم بمراقبة صحة العميل عبر <strong>ChurnZero وHubSpot</strong> للتدخل الاستباقي قبل حدوث أي مشكلة.
+            <div class="vcard rv" style="transition-delay: 0.1s;">
+                <span class="vnum">// 02</span>
+                <h3 class="vcard-title">Metric-Driven Churn Prevention</h3>
+                <p class="vtext">
+                    I treat <strong>ChurnZero & HubSpot</strong> as my cockpit. By monitoring utilization patterns and health scores, I identify detractor signals before they become a cancellation request.
                 </p>
-                <ul class="v-list">
-                    <li><strong>Net Retention Rate (NRR):</strong> العمل على ضمان بقاء العميل ونمو حجم استثماره مع لوسيديا سنوياً.</li>
-                    <li><strong>Actionable NPS:</strong> تحويل تقييمات العملاء إلى خطط عمل تنفيذية يتم قياس أثرها فوراً.</li>
-                </ul>
+                <span class="vtag">NRR Focused</span><span class="vtag">Data-Led CSM</span>
             </div>
 
-            <div class="v-card rv">
-                <span class="v-num">03</span>
-                <h3 class="v-title">INTERNAL VOICE OF CUSTOMER (VOC)</h3>
-                <p class="v-text">
-                    دوري كـ CSM هو أن أكون <strong>همزة الوصل</strong> بين العميل وفريق المنتج. سأنقل "نبض السوق" لضمان أن خارطة طريق لوسيديا تحل مشاكل حقيقية.
+            <div class="vcard rv">
+                <span class="vnum">// 03</span>
+                <h3 class="vcard-title">Closed-Loop VoC (Voice of Customer)</h3>
+                <p class="vtext">
+                    Acting as the internal bridge between clients and the product team. At Zid, I mapped NPS signals directly to product fixes, reducing churn by <strong>17% in just 45 days.</strong>
                 </p>
-                <ul class="v-list">
-                    <li><strong>Feedback Loop:</strong> إغلاق الحلقة مع فريق المنتج لضمان تنفيذ الميزات التي ترفع من ولاء العملاء.</li>
-                    <li><strong>Enterprise Trust:</strong> بناء علاقات عميقة مع عملاء المستوى الحكومي والشركات الكبرى قائمة على الموثوقية.</li>
-                </ul>
+                <span class="vtag">NPS Obsession</span><span class="vtag">Product Bridge</span>
             </div>
 
-            <div class="v-card rv" style="transition-delay: 0.1s;">
-                <span class="v-num">04</span>
-                <h3 class="v-title">AI-DRIVEN PROACTIVITY</h3>
-                <p class="v-text">
-                    لوسيديا شركة AI-Native، ولذا يجب أن تكون خدمة العملاء فيها <strong>ذكية واستباقية</strong>. لا أنتظر اتصال العميل؛ بل أسبقه بالحل.
+            <div class="vcard rv" style="transition-delay: 0.1s;">
+                <span class="vnum">// 04</span>
+                <h3 class="vcard-title">Government & Enterprise Relationship</h3>
+                <p class="vtext">
+                    Navigating high-stakes <strong>B2B relationships in Saudi Arabia</strong>. I understand the cultural nuances of Riyadh's government sector and Jeddah's enterprise brands.
                 </p>
-                <ul class="v-list">
-                    <li><strong>Predictive Success:</strong> استخدام تحليلات لوسيديا للتنبؤ بالعملاء المحتمل خروجهم والتدخل فوراً.</li>
-                    <li><strong>Simplifying Complexity:</strong> تبسيط المصطلحات التقنية المعقدة للعملاء لضمان أقصى استفادة من المنصة.</li>
-                </ul>
+                <span class="vtag">Stakeholder Mgmt</span><span class="vtag">Saudi Market Native</span>
             </div>
         </div>
+    </section>
 
-        <div class="impact-box rv">
-            <p class="impact-text">
-                "أنا لا أقدم خدمة عملاء تقليدية؛ أنا أقوم بـ <span>هندسة ولاء العملاء</span> عبر البيانات والذكاء الاصطناعي. هدفي هو تحويل لوسيديا من (خيار تقني) إلى (شريك استراتيجي لا يمكن الاستغناء عنه)."
-            </p>
+    <section id="roadmap">
+        <div class="slabel rv">The 90-Day Plan</div>
+        <h2 class="stitle">Accelerating <span>Impact</span> From Day 01</h2>
+        <div class="tgrid rv">
+            <div class="tphase">
+                <h3 class="tph">Learn</h3>
+                <span class="tdays">// DAYS 1-30</span>
+                <ul class="tlist">
+                    <li>Master Lucidya's NLU capabilities</li>
+                    <li>Audit top 10 enterprise account health</li>
+                    <li>Shadow sales-to-success handovers</li>
+                </ul>
+            </div>
+            <div class="tphase">
+                <h3 class="tph">Build</h3>
+                <span class="tdays">// DAYS 31-60</span>
+                <ul class="tlist">
+                    <li>Design Arabic-first onboarding playbook</li>
+                    <li>Establish proactive NPS response loops</li>
+                    <li>Identify expansion opportunities (Upsell)</li>
+                </ul>
+            </div>
+            <div class="tphase">
+                <h3 class="tph">Drive</h3>
+                <span class="tdays">// DAYS 61-90</span>
+                <ul class="tlist">
+                    <li>Deliver first QBR with clear ROI data</li>
+                    <li>Stabilize at-risk accounts health scores</li>
+                    <li>Close first cross-sell opportunity</li>
+                </ul>
+            </div>
         </div>
     </section>
 
@@ -208,7 +230,7 @@
             document.getElementById('prog').style.width = (scroll / height) * 100 + '%';
         });
 
-        // Reveal Animations
+        // Intersection Observer for Reveal
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if(entry.isIntersecting) {
@@ -225,21 +247,19 @@
                     const target = entry.target;
                     const endVal = parseInt(target.getAttribute('data-target'));
                     let startVal = 0;
-                    const duration = 2000;
-                    const stepTime = Math.abs(Math.floor(duration / endVal)) || 20;
                     const timer = setInterval(() => {
-                        startVal += Math.ceil(endVal / (duration / stepTime));
-                        if(startVal >= endVal) { target.innerText = endVal.toLocaleString(); clearInterval(timer); } 
-                        else { target.innerText = startVal.toLocaleString(); }
-                    }, stepTime);
+                        startVal += Math.ceil(endVal / 30);
+                        if(startVal >= endVal) { target.innerText = endVal; clearInterval(timer); } 
+                        else { target.innerText = startVal; }
+                    }, 40);
                     obs.unobserve(target);
                 }
             });
         }, { threshold: 0.5 });
         document.querySelectorAll('.counter').forEach(c => counterObserver.observe(c));
 
-        // NEURAL NETWORK BACKGROUND (CANVAS)
-        const canvas = document.getElementById('network-canvas');
+        // NEURAL NETWORK (CANVAS)
+        const canvas = document.getElementById('net-canvas');
         const ctx = canvas.getContext('2d');
         let width, height, nodes = [];
 
@@ -249,10 +269,8 @@
             nodes = [];
             for(let i=0; i<80; i++) {
                 nodes.push({
-                    x: Math.random() * width,
-                    y: Math.random() * height,
-                    vx: (Math.random() - 0.5) * 0.5,
-                    vy: (Math.random() - 0.5) * 0.5,
+                    x: Math.random() * width, y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
                     r: Math.random() * 2 + 1
                 });
             }
@@ -260,33 +278,23 @@
 
         function draw() {
             ctx.clearRect(0, 0, width, height);
-            ctx.fillStyle = '#06B6D4';
-            ctx.strokeStyle = 'rgba(168, 85, 247, 0.15)';
-            
+            ctx.fillStyle = '#00CDB8';
+            ctx.strokeStyle = 'rgba(108, 92, 231, 0.15)';
             for(let i=0; i<nodes.length; i++) {
-                let n = nodes[i];
-                n.x += n.vx; n.y += n.vy;
+                let n = nodes[i]; n.x += n.vx; n.y += n.vy;
                 if(n.x < 0 || n.x > width) n.vx *= -1;
                 if(n.y < 0 || n.y > height) n.vy *= -1;
-                
-                ctx.beginPath();
-                ctx.arc(n.x, n.y, n.r, 0, Math.PI*2);
-                ctx.fill();
-                
+                ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI*2); ctx.fill();
                 for(let j=i+1; j<nodes.length; j++) {
                     let n2 = nodes[j];
-                    let dist = Math.hypot(n.x - n2.x, n.y - n2.y);
-                    if(dist < 150) {
-                        ctx.beginPath();
-                        ctx.moveTo(n.x, n.y);
-                        ctx.lineTo(n2.x, n2.y);
-                        ctx.stroke();
+                    let d = Math.hypot(n.x - n2.x, n.y - n2.y);
+                    if(d < 150) {
+                        ctx.beginPath(); ctx.moveTo(n.x, n.y); ctx.lineTo(n2.x, n2.y); ctx.stroke();
                     }
                 }
             }
             requestAnimationFrame(draw);
         }
-
         window.addEventListener('resize', init);
         init(); draw();
     </script>
